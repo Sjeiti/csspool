@@ -92,8 +92,7 @@ export const css = `
   dialog.${name} legend {
     display: block;
     width: 100%;
-    margin: 8px 0;
-    box-shadow: 0 4px 0 #DDD;
+    box-shadow: 0 1px 0 #DDD, 0 -1px 0 #CCC;
     cursor: pointer;
   }
   dialog.${name} .collapse+label+div {
@@ -107,6 +106,7 @@ export const css = `
   }
   dialog.${name} .collapse:checked+label+div {
     display: block;
+    margin: 8px 0;
   }
   dialog.${name} .collapse:checked+label legend:after {
     transform: rotate(90deg);

@@ -102,7 +102,7 @@ function setDialog(target){
       }</ul>
       <hr>
 
-      <ul>${appliedCSS.map(s=>`<li>${s}</li>`)}</ul>
+      <ul class="css">${appliedCSS.map(s=>`<li>${s}</li>`).join('')}</ul>
 
       <hr>
       ${Object.keys(cssPropsJson).map((legend,i)=>`<fieldset>
@@ -140,24 +140,26 @@ function setDialog(target){
  * @param {string} value
  */
 function addStyle(prop,value){
-  // console.log('addStyle',{prop,value})
-  // console.log('rules',alterstyle.sheet.rules)
-  const parents = elementAndParents(lastTarget).reverse()
-    //
-    //
-    //
-    const appliedCSS = css(target)
-    console.log('appliedCSS',appliedCSS)
-    console.log('addStyle'); // todo: remove log
-    parents.map(elm=>{
-      console.log('\tid',elm.getAttribute.id); // todo: remove log
-      console.log('\tclass',elm.getAttribute.class); // todo: remove log
-      return elm
-    })
-    //
-    //
-  const selector = parents.map(elm=>elm.nodeName.toLowerCase()).join(' ')
-  console.log(name,value,alterstyle,alterstyle.sheet)
-  console.log(parents.map(elm=>elm.nodeName.toLowerCase()).join(' '))
-  alterstyle.sheet.insertRule(`${selector} { ${prop}: ${value} }`)//, 1
+  let querySelector = css(lastTarget)
+      .map(s=>s.split(/\s*{/).shift())
+      .map(selector=>({selector,value:selector.split(/[.#\s]/g).length}))
+      .reduce((highest,other)=>other.value>=highest.value?other:highest,{selector:'',value:0})
+      .selector
+  //
+  if (querySelector==='') {
+      elementAndParents(lastTarget).reverse().map(elm=>{
+          const elmId = elm.getAttribute('id')
+          const elmClass = elm.getAttribute('class')
+          console.log('elmId,elmClass',elmId,elmClass); // todo: remove log
+          return elm
+      })
+      querySelector = parents.map(elm=>elm.nodeName.toLowerCase()).join(' ')
+  }
+  const {sheet,sheet:{rules},sheet:{rules:{length}}} = alterstyle
+  const rule = Array.from(rules).filter(rule=>rule.selectorText===querySelector).pop()
+  if (rule) {
+      rule.style[prop] = value
+  } else {
+      sheet.insertRule(`${querySelector} { ${prop}: ${value} }`,length)
+  }
 }
