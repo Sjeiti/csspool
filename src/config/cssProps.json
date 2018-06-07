@@ -1,0 +1,35 @@
+{
+    "positioning":[
+      "position"
+      ,"left"
+      ,"top"
+      ,"right"
+      ,"bottom"
+  ]
+  ,"dimension":[
+      "display"
+      ,"width"
+      ,"height"
+      ,"margin"
+      ,"padding"
+  ]
+  ,"typography":[
+      "font-family"
+      ,"font-size"
+      ,"font-weight"
+      ,"font-style"
+      ,"line-height"
+      ,"text-transform"
+      ,"text-align"
+      ,"text-indent"
+      ,"text-decoration"
+      ,"text-overflow"
+      ,"color"
+  ]
+  ,"style":[
+      "background-color"
+      ,"border-color"
+      ,"border-width"
+      ,"border-radius"
+  ]
+}

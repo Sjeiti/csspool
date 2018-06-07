@@ -1,7 +1,8 @@
-import cssProps from './config/cssProps'
 import {css as uiCSS,className} from './config/uiStyle'
 import {NAME} from './config'
 import {elementAndParents,css,createElement} from './util'
+import cssPropsJson from 'json-loader!./config/cssProps.json'
+import cssValsJson from 'json-loader!./config/cssPropValues.json'
 
 const defaultOption = '<option value="-1">…</option>'
 const body = document.body
@@ -15,6 +16,9 @@ console.log('dialog',dialog) // todo: remove log
 createElement('style',body,style=>style.innerHTML = uiCSS)
 
 const alterstyle = createElement('style',body)
+
+console.log('cssPropsJson',cssPropsJson) // todo: remove log
+console.log('cssValsJson',cssValsJson) // todo: remove log
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,20 +96,27 @@ function setDialog(target){
   //
   //
   dialog.innerHTML = `<h3>${NAME}</h3><button class="${className.close}"></button>
-      
+
       <ul class="${className.tree}">${
         parents.reverse().map((elm,i,a)=>`<li${i===a.length-1?' class="current"':''}><button data-index="${i}">${elm.nodeName}</button></li>`).join('')+(children.length?`&gt;<select data-children>${defaultOption+Array.from(children).map((child,j)=>`<option value="${j}">${child.nodeName}</option>`)}</select>`:'')
       }</ul>
       <hr>
-          
+
       <ul>${appliedCSS.map(s=>`<li>${s}</li>`)}</ul>
-      
+
+      <hr>
+      ${Object.keys(cssPropsJson).map(legend=>`<fieldset>
+        <legend>${legend}</legend>
+        ${cssPropsJson[legend].map(propertyName=>`<label>
+          <span>${propertyName}</span>
+          <select name="${propertyName}" data-prop>
+            ${defaultOption+cssValsJson[propertyName].map(value=>`<option>${value}</option>`)}
+          </select>
+        </label>`).join('')}
+      </fieldset>`).join('')}
+
       <hr>
       <fieldset>
-        ${cssProps.map(prop=>`<label>
-          <span>${prop.name}</span>
-          <select name="${prop.name}" data-prop>${defaultOption+prop.values.map(value=>`<option>${value}</option>`)}</select>
-        </label>`).join('')}
         <label>background-color<input name="background-color" type="color" data-prop></input></label>
       </fieldset>`
 

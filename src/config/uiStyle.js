@@ -21,7 +21,8 @@ export const css = `
     min-height: 200px;
     border: 0;
     border-radius: 2px;
-    box-shadow: 1px 4px 16px rgba(0,0,0,0.3);
+    box-shadow: 1px 4px 16px rgba(0,0,0,0.3), 0 0 0 1px red;
+    background: linear-gradient(#FFF, #EEE);
   }
   dialog.${name}::backdrop {
     background-color: transparent;

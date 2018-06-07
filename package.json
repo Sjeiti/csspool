@@ -20,6 +20,7 @@
     "version:minor": "npm run version -- --minor",
     "version:major": "npm run version -- --major",
     "version:release": "release.bat",
+    "mapCSS": "node task/mapCSSProps",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "body-parser": "^1.17.1",
     "chokidar-cli": "^1.2.0",
+    "css-properties-values": "^1.0.0",
     "eslint": "^3.19.0",
     "express": "^4.15.2",
     "mkdirp": "^0.5.1",
