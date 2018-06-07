@@ -23,6 +23,7 @@ export const css = `
     border-radius: 2px;
     box-shadow: 1px 4px 16px rgba(0,0,0,0.3), 0 0 0 1px red;
     background: linear-gradient(#FFF, #EEE);
+    overflow: hidden;
   }
   dialog.${name}::backdrop {
     background-color: transparent;
@@ -58,6 +59,14 @@ export const css = `
     box-shadow: 0 0 0 1px red;
   }
   
+  dialog.${name} hr {
+    margin: 8px 0;
+    border: 0;
+    height: 2px;
+    background-color: #CCC;
+    box-shadow: 100px 0 0 #CCC,  -100px 0 0 #CCC;
+  }
+  
   dialog.${name} .${className.tree} {
     display: block;
     padding: 0;
@@ -80,15 +89,49 @@ export const css = `
     padding: 0;
   }
   
+  dialog.${name} legend {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    box-shadow: 0 4px 0 #DDD;
+    cursor: pointer;
+  }
+  dialog.${name} .collapse+label+div {
+    display: none;
+  }
+  dialog.${name} .collapse+label {
+    display: block;
+  }
+  dialog.${name} .collapse+label legend:after {
+    content: '>';
+  }
+  dialog.${name} .collapse:checked+label+div {
+    display: block;
+  }
+  dialog.${name} .collapse:checked+label legend:after {
+    transform: rotate(90deg);
+  }
+  
   dialog.${name} label {
     display: flex;
   }
-  dialog.${name} label>* {
+  dialog.${name} fieldset div label>* {
     flex: 33.33% 0 0;
+    max-width: 33.33%;
   }
   
   .${className.ghost} {
     position: absolute;
     box-shadow: 0 0 0 1px blue;
+  }
+  
+  .visually-hidden {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding:0 !important;
+    border:0 !important;
+    height: 1px !important; 
+    width: 1px !important; 
+    overflow: hidden;
   }
 `

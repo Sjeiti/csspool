@@ -92,7 +92,7 @@ function setDialog(target){
   const parents = elementAndParents(target)
   //
   const appliedCSS = css(target)
-  console.log('appliedCSS',appliedCSS)
+  // console.log('appliedCSS',appliedCSS)
   //
   //
   dialog.innerHTML = `<h3>${NAME}</h3><button class="${className.close}"></button>
@@ -105,14 +105,17 @@ function setDialog(target){
       <ul>${appliedCSS.map(s=>`<li>${s}</li>`)}</ul>
 
       <hr>
-      ${Object.keys(cssPropsJson).map(legend=>`<fieldset>
-        <legend>${legend}</legend>
-        ${cssPropsJson[legend].map(propertyName=>`<label>
-          <span>${propertyName}</span>
-          <select name="${propertyName}" data-prop>
-            ${defaultOption+cssValsJson[propertyName].map(value=>`<option>${value}</option>`)}
-          </select>
-        </label>`).join('')}
+      ${Object.keys(cssPropsJson).map((legend,i)=>`<fieldset>
+        <input type="checkbox" name="props" class="collapse visually-hidden" id="check${legend}" ${i===0?'checked':''} />
+        <label for="check${legend}"><legend>${legend}</legend></label>
+        <div>
+          ${cssPropsJson[legend].map(propertyName=>`<label>
+            <span>${propertyName}</span>
+            <select name="${propertyName}" data-prop>
+              ${defaultOption+cssValsJson[propertyName].map(value=>`<option>${value}</option>`)}
+            </select>
+          </label>`).join('')}
+        </div>
       </fieldset>`).join('')}
 
       <hr>
@@ -137,8 +140,22 @@ function setDialog(target){
  * @param {string} value
  */
 function addStyle(prop,value){
-  console.log('rules',alterstyle.sheet.rules)
+  // console.log('addStyle',{prop,value})
+  // console.log('rules',alterstyle.sheet.rules)
   const parents = elementAndParents(lastTarget).reverse()
+    //
+    //
+    //
+    const appliedCSS = css(target)
+    console.log('appliedCSS',appliedCSS)
+    console.log('addStyle'); // todo: remove log
+    parents.map(elm=>{
+      console.log('\tid',elm.getAttribute.id); // todo: remove log
+      console.log('\tclass',elm.getAttribute.class); // todo: remove log
+      return elm
+    })
+    //
+    //
   const selector = parents.map(elm=>elm.nodeName.toLowerCase()).join(' ')
   console.log(name,value,alterstyle,alterstyle.sheet)
   console.log(parents.map(elm=>elm.nodeName.toLowerCase()).join(' '))
