@@ -25,6 +25,8 @@ console.log('cssValsJson',cssValsJson) // todo: remove log
 body.addEventListener('mousedown',onMouseDownBody,false)
 body.addEventListener('click',onClickBody,false)
 body.addEventListener('change',onChange,false)
+body.addEventListener('input',onInput,false)
+window.addEventListener('resize',onResize,false)
 
 let lastTarget
 let newTarget
@@ -69,6 +71,7 @@ function onChange(e){
   if (isDialog){
     const isSelectChildren = target.matches('select[data-children]')
     const isProp = target.matches('[data-prop]')
+    const isCSS = target.matches('textarea')
     if (isSelectChildren){
       const {children} = lastTarget
       const index = parseInt(target.value,10)
@@ -78,8 +81,33 @@ function onChange(e){
       const name = target.getAttribute('name')
       const value = target.value
       addStyle(name,value)
+    } else if (isCSS){
+      showCSS()
     }
   }
+}
+
+/**
+ * Input event handler
+ * @param {Event} e
+ */
+function onInput(e){
+  const {target} = e
+  const parents = elementAndParents(target)
+  const isDialog = parents.includes(dialog)
+  if (isDialog){
+    const isCSS = target.matches('textarea')
+    if (isCSS){
+      alterstyle.textContent = target.value
+    }
+  }
+}
+
+/**
+ * Resize event handler
+ */
+function onResize(){
+  moveGhost()
 }
 
 /**
@@ -121,17 +149,29 @@ function setDialog(target){
       <hr>
       <fieldset>
         <label>background-color<input name="background-color" type="color" data-prop></input></label>
-      </fieldset>`
+      </fieldset>
 
-  // ghost element
-  const rect = target.getBoundingClientRect()
-  Object.assign(ghost.style,{
-      top: rect.y+px
-      ,left: rect.x+px
-      ,width: rect.width+px
-      ,height: rect.height+px
-  })
+      <hr>
+      <textarea></textarea>`
+
+  showCSS()
+  moveGhost()
   body.appendChild(ghost)
+}
+
+/**
+ * Move the ghost element
+ */
+function moveGhost(){
+  if (lastTarget&&ghost.parentNode){
+    const rect = lastTarget.getBoundingClientRect()
+    Object.assign(ghost.style,{
+        top: rect.y+px
+        ,left: rect.x+px
+        ,width: rect.width+px
+        ,height: rect.height+px
+    })
+  }
 }
 
 /**
@@ -140,26 +180,43 @@ function setDialog(target){
  * @param {string} value
  */
 function addStyle(prop,value){
-  let querySelector = css(lastTarget)
-      .map(s=>s.split(/\s*{/).shift())
-      .map(selector=>({selector,value:selector.split(/[.#\s]/g).length}))
-      .reduce((highest,other)=>other.value>=highest.value?other:highest,{selector:'',value:0})
+  const querySelector = css(lastTarget)
+      .map(s => s.split(/\s*{/).shift())
+      .map(selector => ({selector,value: selector.split(/[.#\s]/g).length}))
+      .reduce((highest,other) => other.value>=highest.value?other:highest,{selector: '',value: 0})
       .selector
-  //
-  if (querySelector==='') {
-      elementAndParents(lastTarget).reverse().map(elm=>{
-          const elmId = elm.getAttribute('id')
-          const elmClass = elm.getAttribute('class')
-          console.log('elmId,elmClass',elmId,elmClass); // todo: remove log
-          return elm
+      ||
+      elementAndParents(lastTarget)
+      .reverse()
+      .splice(2)
+      .map(elm => {
+        const id = elm.getAttribute('id')
+        const classes = elm.getAttribute('class')
+        return id&&`#${id}`||classes&&classes.split(/\s/g).map(c=>`.${c}`).join('')||elm.nodeName.toLowerCase()
       })
-      querySelector = parents.map(elm=>elm.nodeName.toLowerCase()).join(' ')
-  }
-  const {sheet,sheet:{rules},sheet:{rules:{length}}} = alterstyle
-  const rule = Array.from(rules).filter(rule=>rule.selectorText===querySelector).pop()
-  if (rule) {
-      rule.style[prop] = value
+      .join(' ')
+  //
+  const {sheet,sheet: {rules},sheet: {rules: {length}}} = alterstyle
+  const rule = Array.from(rules).filter(rule => rule.selectorText===querySelector).pop()
+  if (value==='-1'){
+    rule&&rule.style.removeProperty(prop)
+  } else if (rule){
+    rule.style[prop] = value
   } else {
-      sheet.insertRule(`${querySelector} { ${prop}: ${value} }`,length)
+    sheet.insertRule(`${querySelector} { ${prop}: ${value} }`,length)
   }
+  showCSS()
+  moveGhost()
+}
+
+/**
+ * Apply the new CSS to the textarea value
+ */
+function showCSS(){
+  const {sheet: {rules}} = alterstyle
+  dialog.querySelector('textarea').value = Array.from(rules)
+      .map(rule=>rule.cssText)
+      .join('\n')
+      .replace(/([{;])\s/g,'$1\n  ')
+      .replace(/\s*}/g,'\n}\n  ')
 }

@@ -12,6 +12,8 @@ export const className = {
 }
 
 export const css = `
+  @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+
   dialog.${name} {
     position: absolute;
     left: 50px;
@@ -36,8 +38,9 @@ export const css = `
     right: initial;
     margin: initial;
     padding: initial;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 140%;
+    font-family: Source Code Pro,monospace;
   }
   dialog.${name} h3, dialog.${name} .${className.close} {
     position: absolute;
@@ -118,6 +121,11 @@ export const css = `
   dialog.${name} fieldset div label>* {
     flex: 33.33% 0 0;
     max-width: 33.33%;
+  }
+  
+  dialog.${name} textarea {
+    width: 100%;
+    min-height: 50px;
   }
   
   .${className.ghost} {
