@@ -14,7 +14,16 @@ export const className = {
 export const css = `
   @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
 
+
   dialog.${name} {
+  
+    --color-font: #333;
+    --color-input-background: #FFF;
+    --color-background1: #FFF;
+    --color-background2: #EEE;
+    --color-border: #CCC;
+    --color-hr: #333;
+    
     position: absolute;
     left: 50px;
     top: 20px;
@@ -24,7 +33,7 @@ export const css = `
     border: 0;
     border-radius: 2px;
     box-shadow: 1px 4px 16px rgba(0,0,0,0.3), 0 0 0 1px red;
-    background: linear-gradient(#FFF, #EEE);
+    background: linear-gradient(var(--color-background1), var(--color-background2));
     overflow: hidden;
   }
   dialog.${name}::backdrop {
@@ -41,11 +50,27 @@ export const css = `
     font-size: 12px;
     line-height: 140%;
     font-family: Source Code Pro,monospace;
+    color: var(--color-font);
+    border-color: var(--color-border);
   }
+  dialog.${name}--dark input, dialog.${name}--dark textarea, dialog.${name}--dark select {
+    background-color: var(--color-input-background);
+  }
+  
+  dialog.${name}--dark {
+    --color-font: #FFC66D;
+    --color-input-background: #2B2B2B;
+    --color-background1: #3C3F41;
+    --color-background2: #313335;
+    --color-border: #333;
+    --color-hr: #FFC66D;
+  }
+  
   dialog.${name} h3, dialog.${name} .${className.close} {
     position: absolute;
     top: 2px;
     line-height: 100%;
+    font-weight: bold;
   }
   dialog.${name} h3 {
     left: 4px;
@@ -59,15 +84,15 @@ export const css = `
     content: '✖';
   }
   dialog.${name} .${className.current} {
-    box-shadow: 0 0 0 1px red;
+    box-shadow: 0 0 0 1px #F04;
   }
   
   dialog.${name} hr {
     margin: 8px 0;
     border: 0;
-    height: 2px;
-    background-color: #CCC;
-    box-shadow: 100px 0 0 #CCC,  -100px 0 0 #CCC;
+    height: 1px;
+    background-color: var(--color-hr);
+    box-shadow: 100px 0 0 var(--color-hr),  -100px 0 0 var(--color-hr);
   }
   
   dialog.${name} .${className.tree} {
@@ -95,8 +120,9 @@ export const css = `
   dialog.${name} legend {
     display: block;
     width: 100%;
-    box-shadow: 0 1px 0 #DDD, 0 -1px 0 #CCC;
+    box-shadow: 0 1px 0 var(--color-border), 0 -1px 0 var(--color-border);
     cursor: pointer;
+    font-weight: bold;
   }
   dialog.${name} .collapse+label+div {
     display: none;
@@ -106,21 +132,36 @@ export const css = `
   }
   dialog.${name} .collapse+label legend:after {
     content: '>';
+    display: inline-block;
+    margin-left: 10px;
   }
   dialog.${name} .collapse:checked+label+div {
     display: block;
     margin: 8px 0;
   }
   dialog.${name} .collapse:checked+label legend:after {
-    transform: rotate(90deg);
+    transform: rotate(90deg); 
   }
   
   dialog.${name} label {
     display: flex;
   }
   dialog.${name} fieldset div label>* {
-    flex: 33.33% 0 0;
-    max-width: 33.33%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  dialog.${name} fieldset div label>*:nth-child(1) {
+    flex: 30% 0 0;
+    max-width: 30%;
+  }
+  dialog.${name} fieldset div label>*:nth-child(2) {
+    flex: 30% 0 0;
+    max-width: 30%;
+  }
+  dialog.${name} fieldset div label>*:nth-child(3) {
+    flex: 40% 0 0;
+    max-width: 40%;
   }
   
   dialog.${name} textarea {

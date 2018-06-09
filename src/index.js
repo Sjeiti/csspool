@@ -1,6 +1,6 @@
 import {css as uiCSS,className} from './config/uiStyle'
 import {NAME} from './config'
-import {elementAndParents,css,createElement} from './util'
+import {elementAndParents,css,createElement,getFragment} from './util'
 import cssPropsJson from 'json-loader!./config/cssProps.json'
 import cssValsJson from 'json-loader!./config/cssPropValues.json'
 
@@ -10,13 +10,13 @@ const px = 'px'
 
 const ghost = createElement(`div.${className.ghost}`)
 
-const dialog = createElement(`dialog.${className.main}`,body)
-console.log('dialog',dialog) // todo: remove log
+const dialog = createElement(`dialog.${className.main}.${className.main}--dark`,body)
 
 createElement('style',body,style=>style.innerHTML = uiCSS)
 
 const alterstyle = createElement('style',body)
 
+console.log('dialog',dialog) // todo: remove log
 console.log('cssPropsJson',cssPropsJson) // todo: remove log
 console.log('cssValsJson',cssValsJson) // todo: remove log
 
@@ -79,8 +79,9 @@ function onChange(e){
       setDialog(element)
     } else if (isProp){
       const name = target.getAttribute('name')
-      const value = target.value
+      const value = target.value + (target.type==='range'?'%':'')
       addStyle(name,value)
+      appendRealValueIput(target)
     } else if (isCSS){
       showCSS()
     }
@@ -96,8 +97,14 @@ function onInput(e){
   const parents = elementAndParents(target)
   const isDialog = parents.includes(dialog)
   if (isDialog){
+    const isProp = target.matches('[data-prop]')
     const isCSS = target.matches('textarea')
-    if (isCSS){
+    if (isProp){
+      const name = target.getAttribute('name')
+      const value = target.value + (target.type==='range'?'%':'')
+      addStyle(name,value)
+      appendRealValueIput(target)
+    } else if (isCSS){
       alterstyle.textContent = target.value
     }
   }
@@ -108,6 +115,20 @@ function onInput(e){
  */
 function onResize(){
   moveGhost()
+}
+
+/**
+ * Add extra input element after original
+ * @param {HTMLElement} from
+ */
+function appendRealValueIput(from){
+  const {parentNode,value,nextElementSibling,name} = from
+  nextElementSibling&&parentNode.removeChild(nextElementSibling)
+  const fragment =
+      value==='length'&&`<input name="${name}" data-prop type="text" />`
+      ||value==='%'&&`<input name="${name}" data-prop type="range" min="0" max="100" step="1" />`
+      ||value==='color'&&`<input name="${name}" data-prop type="color" />`
+  fragment&&parentNode.appendChild(getFragment(fragment))
 }
 
 /**
@@ -138,18 +159,13 @@ function setDialog(target){
         <label for="check${legend}"><legend>${legend}</legend></label>
         <div>
           ${cssPropsJson[legend].map(propertyName=>`<label>
-            <span>${propertyName}</span>
+            <span title="${propertyName}">${propertyName}</span>
             <select name="${propertyName}" data-prop>
               ${defaultOption+cssValsJson[propertyName].map(value=>`<option>${value}</option>`)}
             </select>
           </label>`).join('')}
         </div>
       </fieldset>`).join('')}
-
-      <hr>
-      <fieldset>
-        <label>background-color<input name="background-color" type="color" data-prop></input></label>
-      </fieldset>
 
       <hr>
       <textarea></textarea>`
@@ -180,6 +196,7 @@ function moveGhost(){
  * @param {string} value
  */
 function addStyle(prop,value){
+  console.log('addStyle',{prop,value}) // todo: remove log
   const querySelector = css(lastTarget)
       .map(s => s.split(/\s*{/).shift())
       .map(selector => ({selector,value: selector.split(/[.#\s]/g).length}))

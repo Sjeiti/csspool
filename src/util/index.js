@@ -74,3 +74,26 @@ export function createElement(querySelector,parentNode,method){
   parentNode&&parentNode.appendChild(element)
   return element
 }
+
+/**
+ * Get documentFragment from an HTML string
+ * @param {string} str
+ * @returns {DocumentFragment}
+ */
+export function getFragment(str) {
+    const fragment = document.createDocumentFragment()
+    Array.from(wrapHTMLString(str).childNodes).forEach(elm => fragment.appendChild(elm))
+    return fragment
+}
+
+/**
+ * Set the innerHTML of a cached div
+ * Helper method for getFragment and stringToElement
+ * @param {string} str
+ * @returns {HTMLElement}
+ */
+function wrapHTMLString(str) {
+    const div = document.createElement('div')
+    div.innerHTML = str
+    return div
+}
