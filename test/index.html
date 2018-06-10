@@ -83,10 +83,15 @@
   .container.container label {
     padding-left: 0;
   }
+</style>
+<style type="text/css" data-custom-css>
   .container label {
     padding-left: 10px;
   }
 </style>
 <script src="../dist/index.js"></script>
+<script>
+  csspool.init({styleSheet:document.querySelector('[data-custom-css]')})
+</script>
 </body>
 </html>

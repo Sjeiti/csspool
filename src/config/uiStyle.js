@@ -9,6 +9,7 @@ export const className = {
   ,close: `${name}close`
   ,current: `${name}current`
   ,tree: `${name}tree`
+  ,selectors: `${name}selectors`
 }
 
 export const css = `
@@ -117,6 +118,10 @@ export const css = `
     padding: 0;
   }
   
+  dialog.${name} .${className.selectors} .current {
+    font-weight: bold;
+  }
+  
   dialog.${name} legend {
     display: block;
     width: 100%;
@@ -154,19 +159,21 @@ export const css = `
   dialog.${name} fieldset div label>*:nth-child(1) {
     flex: 30% 0 0;
     max-width: 30%;
+    order: 1;
   }
   dialog.${name} fieldset div label>*:nth-child(2) {
-    flex: 30% 0 0;
-    max-width: 30%;
+    flex: 40px 0 0;
+    max-width: 40px;
+    order: 3;
   }
   dialog.${name} fieldset div label>*:nth-child(3) {
-    flex: 40% 0 0;
-    max-width: 40%;
+    flex: auto 1 1;
+    order: 2;
   }
   
   dialog.${name} textarea {
     width: 100%;
-    min-height: 50px;
+    min-height: 150px;
   }
   
   .${className.ghost} {

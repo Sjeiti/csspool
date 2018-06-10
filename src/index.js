@@ -7,29 +7,37 @@ import cssValsJson from 'json-loader!./config/cssPropValues.json'
 const defaultOption = '<option value="-1">…</option>'
 const body = document.body
 const px = 'px'
+const lengthUnits = ['ch','em','ex','rem','em','vh','vw','vmin','vmax','px','cm','mm','in','pc','pt']
 
-const ghost = createElement(`div.${className.ghost}`)
+const defaultOptions = {
+  lengthUnits: ['px','rem','em','vw','vh']
+}
 
-const dialog = createElement(`dialog.${className.main}.${className.main}--dark`,body)
+let ghost,ghosts,dialog,alterstyle,lastTarget,newTarget
 
-createElement('style',body,style=>style.innerHTML = uiCSS)
+window.csspool = {init}
 
-const alterstyle = createElement('style',body)
-
-console.log('dialog',dialog) // todo: remove log
-console.log('cssPropsJson',cssPropsJson) // todo: remove log
-console.log('cssValsJson',cssValsJson) // todo: remove log
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-body.addEventListener('mousedown',onMouseDownBody,false)
-body.addEventListener('click',onClickBody,false)
-body.addEventListener('change',onChange,false)
-body.addEventListener('input',onInput,false)
-window.addEventListener('resize',onResize,false)
-
-let lastTarget
-let newTarget
+/**
+ * Initialise
+ * @param {Object} options
+ * @param {HTMLStyleElement} [options.styleSheet]
+ * @param {string} [options.lengthUnits]
+ */
+function init(options){
+  Object.assign(options||{},defaultOptions)
+  alterstyle = options.styleSheet||createElement('style',body)
+  setLengths(options.lengthUnits)
+  ghost = createElement(`div.${className.ghost}`) // todo todo todo todo
+  ghosts = createElement('div',body) // todo todo todo todo
+  dialog = createElement(`dialog.${className.main}.${className.main}--dark`,body)
+  createElement('style',body,style=>style.innerHTML = uiCSS)
+  //
+  body.addEventListener('mousedown',onMouseDownBody,false)
+  body.addEventListener('click',onClickBody,false)
+  body.addEventListener('change',onChange,false)
+  body.addEventListener('input',onInput,false)
+  window.addEventListener('resize',onResize,false)
+}
 
 /**
  * Mousedown handler
@@ -79,7 +87,7 @@ function onChange(e){
       setDialog(element)
     } else if (isProp){
       const name = target.getAttribute('name')
-      const value = target.value + (target.type==='range'?'%':'')
+      const value = target.value + (target.getAttribute('data-unit')||'')
       addStyle(name,value)
       appendRealValueIput(target)
     } else if (isCSS){
@@ -101,7 +109,7 @@ function onInput(e){
     const isCSS = target.matches('textarea')
     if (isProp){
       const name = target.getAttribute('name')
-      const value = target.value + (target.type==='range'?'%':'')
+      const value = target.value + (target.getAttribute('data-unit')||'')
       addStyle(name,value)
       appendRealValueIput(target)
     } else if (isCSS){
@@ -118,6 +126,17 @@ function onResize(){
 }
 
 /**
+ * Map lengths to units
+ * @param {string[]} lengths
+ */
+function setLengths(lengths){
+  Object.values(cssValsJson).forEach(list=>{
+    const index = list.indexOf('length')
+    index!==-1&&list.splice(index,1,...lengths)
+  })
+}
+
+/**
  * Add extra input element after original
  * @param {HTMLElement} from
  */
@@ -125,8 +144,8 @@ function appendRealValueIput(from){
   const {parentNode,value,nextElementSibling,name} = from
   nextElementSibling&&parentNode.removeChild(nextElementSibling)
   const fragment =
-      value==='length'&&`<input name="${name}" data-prop type="text" />`
-      ||value==='%'&&`<input name="${name}" data-prop type="range" min="0" max="100" step="1" />`
+      lengthUnits.includes(value)&&`<input name="${name}" data-prop data-unit="${value}" type="number" />`
+      ||value==='%'&&`<input name="${name}" data-prop data-unit="${value}" type="range" min="0" max="100" step="1" />`
       ||value==='color'&&`<input name="${name}" data-prop type="color" />`
   fragment&&parentNode.appendChild(getFragment(fragment))
 }
@@ -144,6 +163,7 @@ function setDialog(target){
   // console.log('appliedCSS',appliedCSS)
   //
   //
+  const bestQuerySelector = getBestQuerySelector(target)
   dialog.innerHTML = `<h3>${NAME}</h3><button class="${className.close}"></button>
 
       <ul class="${className.tree}">${
@@ -151,9 +171,11 @@ function setDialog(target){
       }</ul>
       <hr>
 
-      <ul class="css">${appliedCSS.map(s=>`<li>${s}</li>`).join('')}</ul>
-
+      <ul class="${className.selectors}">${appliedCSS.map(s=>`
+        <li title="${formatCSS(s)}"${s.includes(bestQuerySelector)?' class="current"':''}>${s.replace(/{[^}]*}/,'{ … }')}</li>`).join('')}
+      </ul>
       <hr>
+      
       ${Object.keys(cssPropsJson).map((legend,i)=>`<fieldset>
         <input type="checkbox" name="props" class="collapse visually-hidden" id="check${legend}" ${i===0?'checked':''} />
         <label for="check${legend}"><legend>${legend}</legend></label>
@@ -187,6 +209,19 @@ function moveGhost(){
         ,width: rect.width+px
         ,height: rect.height+px
     })
+    /////////////////////////////////////////////////////////////
+    while (ghosts.firstChild) ghosts.removeChild(ghosts.firstChild)
+    const bestQuerySelector = getBestQuerySelector(lastTarget)
+    Array.from(body.querySelectorAll(bestQuerySelector)).forEach(element=>{
+      const rect = element.getBoundingClientRect()
+      createElement(`div.${className.ghost}`,ghosts,elm=>Object.assign(elm.style,{
+        top: rect.y+px
+        ,left: rect.x+px
+        ,width: rect.width+px
+        ,height: rect.height+px
+      }))
+    })
+    /////////////////////////////////////////////////////////////
   }
 }
 
@@ -197,22 +232,7 @@ function moveGhost(){
  */
 function addStyle(prop,value){
   console.log('addStyle',{prop,value}) // todo: remove log
-  const querySelector = css(lastTarget)
-      .map(s => s.split(/\s*{/).shift())
-      .map(selector => ({selector,value: selector.split(/[.#\s]/g).length}))
-      .reduce((highest,other) => other.value>=highest.value?other:highest,{selector: '',value: 0})
-      .selector
-      ||
-      elementAndParents(lastTarget)
-      .reverse()
-      .splice(2)
-      .map(elm => {
-        const id = elm.getAttribute('id')
-        const classes = elm.getAttribute('class')
-        return id&&`#${id}`||classes&&classes.split(/\s/g).map(c=>`.${c}`).join('')||elm.nodeName.toLowerCase()
-      })
-      .join(' ')
-  //
+  const querySelector = getBestQuerySelector(lastTarget)
   const {sheet,sheet: {rules},sheet: {rules: {length}}} = alterstyle
   const rule = Array.from(rules).filter(rule => rule.selectorText===querySelector).pop()
   if (value==='-1'){
@@ -227,13 +247,48 @@ function addStyle(prop,value){
 }
 
 /**
+ * Get the best querySelector to overwrite
+ * @param {HTMLElement} element
+ * @returns {string}
+ */
+function getBestQuerySelector(element){
+	return css(element)
+      .map(s => s.split(/\s*{/).shift())
+      .map(selector => ({selector,value: selector.split(/[.#\s]/g).length}))
+      .reduce((highest,other) => other.value>=highest.value?other:highest,{selector: '',value: 0})
+      .selector
+      ||
+      elementAndParents(element)
+      .reverse()
+      .splice(2)
+      .map(elm => {
+        const id = elm.getAttribute('id')
+        const classes = elm.getAttribute('class')
+        return id&&`#${id}`||classes&&classes.split(/\s/g).map(c=>`.${c}`).join('')||elm.nodeName.toLowerCase()
+      })
+      .join(' ')
+}
+
+/**
  * Apply the new CSS to the textarea value
+ * @implement formatCSS for last two replacements
  */
 function showCSS(){
   const {sheet: {rules}} = alterstyle
   dialog.querySelector('textarea').value = Array.from(rules)
       .map(rule=>rule.cssText)
       .join('\n')
+      .replace(/([{;])\s/g,'$1\n  ')
+      .replace(/\s*}/g,'\n}\n  ')
+}
+
+/**
+ * Format CSS whitespace
+ * @param {string} css
+ * @returns {string}
+ */
+function formatCSS(css){
+  return css
       .replace(/([{;])\s/g,'$1\n  ')
       .replace(/\s*}/g,'\n}\n  ')
 }
