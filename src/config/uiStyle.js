@@ -178,7 +178,7 @@ export const css = `
   
   .${className.ghost} {
     position: absolute;
-    box-shadow: 0 0 0 1px blue;
+    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);
   }
   
   .visually-hidden {

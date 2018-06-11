@@ -13,7 +13,7 @@ const defaultOptions = {
   lengthUnits: ['px','rem','em','vw','vh']
 }
 
-let ghost,ghosts,dialog,alterstyle,lastTarget,newTarget
+let ghosts,dialog,alterstyle,lastTarget,newTarget,currentQuerySelector
 
 window.csspool = {init}
 
@@ -27,8 +27,7 @@ function init(options){
   Object.assign(options||{},defaultOptions)
   alterstyle = options.styleSheet||createElement('style',body)
   setLengths(options.lengthUnits)
-  ghost = createElement(`div.${className.ghost}`) // todo todo todo todo
-  ghosts = createElement('div',body) // todo todo todo todo
+  ghosts = createElement('div',body)
   dialog = createElement(`dialog.${className.main}.${className.main}--dark`,body)
   createElement('style',body,style=>style.innerHTML = uiCSS)
   //
@@ -58,7 +57,7 @@ function onClickBody(){
     setDialog(newTarget)
     dialog.showModal()
   } else if (newTarget.classList.contains(className.close)){
-    body.removeChild(ghost)
+    body.removeChild(ghosts)
     dialog.close()
   } else if (newTarget.nodeName==='BUTTON'&&parents.includes(dialog.querySelector(`.${className.tree}`))){
     const lastPparents = elementAndParents(lastTarget)
@@ -122,7 +121,7 @@ function onInput(e){
  * Resize event handler
  */
 function onResize(){
-  moveGhost()
+  moveGhosts()
 }
 
 /**
@@ -162,8 +161,15 @@ function setDialog(target){
   const appliedCSS = css(target)
   // console.log('appliedCSS',appliedCSS)
   //
+  currentQuerySelector = getBestQuerySelector(target)
+  const currentRule = Array.from(alterstyle.sheet.cssRules).filter(rule=>rule.selectorText===currentQuerySelector).pop()
+  const currentStyle = currentRule&&currentRule.style
+  console.log('currentStyle',currentStyle) // todo: remove log
   //
-  const bestQuerySelector = getBestQuerySelector(target)
+  //
+  let asdf // todo fugly... fix for something completely different
+  //
+  //
   dialog.innerHTML = `<h3>${NAME}</h3><button class="${className.close}"></button>
 
       <ul class="${className.tree}">${
@@ -172,7 +178,7 @@ function setDialog(target){
       <hr>
 
       <ul class="${className.selectors}">${appliedCSS.map(s=>`
-        <li title="${formatCSS(s)}"${s.includes(bestQuerySelector)?' class="current"':''}>${s.replace(/{[^}]*}/,'{ … }')}</li>`).join('')}
+        <li title="${formatCSS(s)}"${s.includes(currentQuerySelector)?' class="current"':''}>${s.replace(/{[^}]*}/,'{ … }')}</li>`).join('')}
       </ul>
       <hr>
       
@@ -181,9 +187,17 @@ function setDialog(target){
         <label for="check${legend}"><legend>${legend}</legend></label>
         <div>
           ${cssPropsJson[legend].map(propertyName=>`<label>
-            <span title="${propertyName}">${propertyName}</span>
+            <span title="${propertyName}">${propertyName}
+            
+            
+            
+${(asdf = Array.prototype.includes.call(currentStyle,propertyName)&&currentStyle[propertyName].replace(/^\d+(\w+)$/,'$1'))&&''}
+          
+      
+          
+          </span>
             <select name="${propertyName}" data-prop>
-              ${defaultOption+cssValsJson[propertyName].map(value=>`<option>${value}</option>`)}
+              ${defaultOption+cssValsJson[propertyName].map(value=>`<option ${value===asdf?'selected':''}>${value}</option>`)}
             </select>
           </label>`).join('')}
         </div>
@@ -193,26 +207,17 @@ function setDialog(target){
       <textarea></textarea>`
 
   showCSS()
-  moveGhost()
-  body.appendChild(ghost)
+  moveGhosts()
+  body.appendChild(ghosts)
 }
 
 /**
  * Move the ghost element
  */
-function moveGhost(){
-  if (lastTarget&&ghost.parentNode){
-    const rect = lastTarget.getBoundingClientRect()
-    Object.assign(ghost.style,{
-        top: rect.y+px
-        ,left: rect.x+px
-        ,width: rect.width+px
-        ,height: rect.height+px
-    })
-    /////////////////////////////////////////////////////////////
+function moveGhosts(){
+  if (lastTarget&&ghosts.parentNode){
     while (ghosts.firstChild) ghosts.removeChild(ghosts.firstChild)
-    const bestQuerySelector = getBestQuerySelector(lastTarget)
-    Array.from(body.querySelectorAll(bestQuerySelector)).forEach(element=>{
+    Array.from(body.querySelectorAll(currentQuerySelector)).forEach(element=>{
       const rect = element.getBoundingClientRect()
       createElement(`div.${className.ghost}`,ghosts,elm=>Object.assign(elm.style,{
         top: rect.y+px
@@ -221,7 +226,6 @@ function moveGhost(){
         ,height: rect.height+px
       }))
     })
-    /////////////////////////////////////////////////////////////
   }
 }
 
@@ -243,7 +247,7 @@ function addStyle(prop,value){
     sheet.insertRule(`${querySelector} { ${prop}: ${value} }`,length)
   }
   showCSS()
-  moveGhost()
+  moveGhosts()
 }
 
 /**
@@ -252,7 +256,7 @@ function addStyle(prop,value){
  * @returns {string}
  */
 function getBestQuerySelector(element){
-	return css(element)
+  return css(element)
       .map(s => s.split(/\s*{/).shift())
       .map(selector => ({selector,value: selector.split(/[.#\s]/g).length}))
       .reduce((highest,other) => other.value>=highest.value?other:highest,{selector: '',value: 0})
