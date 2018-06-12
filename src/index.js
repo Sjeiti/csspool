@@ -89,6 +89,7 @@ function onChange(e){
       const value = target.value + (target.getAttribute('data-unit')||'')
       addStyle(name,value)
       appendRealValueIput(target)
+      target.style.maxWidth = 'auto'
     } else if (isCSS){
       showCSS()
     }
@@ -143,9 +144,9 @@ function appendRealValueIput(from){
   const {parentNode,value,nextElementSibling,name} = from
   nextElementSibling&&parentNode.removeChild(nextElementSibling)
   const fragment =
-      lengthUnits.includes(value)&&`<input name="${name}" data-prop data-unit="${value}" type="number" />`
-      ||value==='%'&&`<input name="${name}" data-prop data-unit="${value}" type="range" min="0" max="100" step="1" />`
-      ||value==='color'&&`<input name="${name}" data-prop type="color" />`
+      lengthUnits.includes(value)&&`<input name="${name}" value="0" data-prop data-unit="${value}" type="number" />`
+      ||value==='%'&&`<input name="${name}" value="0" data-prop data-unit="${value}" type="range" min="0" max="100" step="1" />`
+      ||value==='color'&&`<input name="${name}" value="#F4A" data-prop type="color" />`
   fragment&&parentNode.appendChild(getFragment(fragment))
 }
 
@@ -162,9 +163,6 @@ function setDialog(target){
   // console.log('appliedCSS',appliedCSS)
   //
   currentQuerySelector = getBestQuerySelector(target)
-  const currentRule = Array.from(alterstyle.sheet.cssRules).filter(rule=>rule.selectorText===currentQuerySelector).pop()
-  const currentStyle = currentRule&&currentRule.style
-  console.log('currentStyle',currentStyle) // todo: remove log
   //
   dialog.innerHTML = `<h3>${NAME}</h3><button class="${className.close}"></button>
 
@@ -205,6 +203,7 @@ function setDialog(target){
  */
 function applyFormValues(){
   const fieldsets = Array.from(dialog.querySelectorAll('fieldset select'))
+  const currentStyle = getCurrentStyle()
   fieldsets.forEach(sel=>{
     const name = sel.getAttribute('name')
     const value = Array.prototype.includes.call(currentStyle,name)&&currentStyle[name]
@@ -281,6 +280,15 @@ function getBestQuerySelector(element){
         return id&&`#${id}`||classes&&classes.split(/\s/g).map(c=>`.${c}`).join('')||elm.nodeName.toLowerCase()
       })
       .join(' ')
+}
+
+/**
+ * Get the current style
+ * @returns {CSSStyleDeclaration}
+ */
+function getCurrentStyle() {
+  const currentRule = Array.from(alterstyle.sheet.cssRules).filter(rule => rule.selectorText===currentQuerySelector).pop()
+  return currentRule && currentRule.style
 }
 
 /**

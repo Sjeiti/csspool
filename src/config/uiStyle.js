@@ -26,8 +26,9 @@ export const css = `
     --color-hr: #333;
     
     position: absolute;
-    left: 50px;
-    top: 20px;
+    left: auto;
+    right: 0;
+    top: 0;
     padding: 20px 10px 10px;
     min-width: 200px;
     min-height: 200px;
@@ -162,8 +163,8 @@ export const css = `
     order: 1;
   }
   dialog.${name} fieldset div label>*:nth-child(2) {
-    flex: 40px 0 0;
-    max-width: 40px;
+    flex: 40px 1 0;
+    /*max-width: 40px;*/
     order: 3;
   }
   dialog.${name} fieldset div label>*:nth-child(3) {

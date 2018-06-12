@@ -16,15 +16,6 @@ module.exports = {
         query: {
           presets: ['es2015', 'stage-0']
         }
-        // include: path.join(__dirname, 'src/js'),
-        // babelrc: false,
-        // query: {
-        //   presets: ['es2015'],
-        //   plugins: [
-        //     ["transform-object-rest-spread"],
-        //     ["transform-react-display-name"],
-        //   ],
-        // }
       }
     ]
   }
