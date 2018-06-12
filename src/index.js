@@ -1,6 +1,6 @@
 import {css as uiCSS,className} from './config/uiStyle'
 import {NAME} from './config'
-import {elementAndParents,css,createElement,getFragment} from './util'
+import {elementAndParents,css,createElement,getFragment,dispatch} from './util'
 import cssPropsJson from 'json-loader!./config/cssProps.json'
 import cssValsJson from 'json-loader!./config/cssPropValues.json'
 
@@ -166,10 +166,6 @@ function setDialog(target){
   const currentStyle = currentRule&&currentRule.style
   console.log('currentStyle',currentStyle) // todo: remove log
   //
-  //
-  let asdf // todo fugly... fix for something completely different
-  //
-  //
   dialog.innerHTML = `<h3>${NAME}</h3><button class="${className.close}"></button>
 
       <ul class="${className.tree}">${
@@ -187,17 +183,9 @@ function setDialog(target){
         <label for="check${legend}"><legend>${legend}</legend></label>
         <div>
           ${cssPropsJson[legend].map(propertyName=>`<label>
-            <span title="${propertyName}">${propertyName}
-            
-            
-            
-${(asdf = Array.prototype.includes.call(currentStyle,propertyName)&&currentStyle[propertyName].replace(/^\d+(\w+)$/,'$1'))&&''}
-          
-      
-          
-          </span>
+            <span title="${propertyName}">${propertyName}</span>
             <select name="${propertyName}" data-prop>
-              ${defaultOption+cssValsJson[propertyName].map(value=>`<option ${value===asdf?'selected':''}>${value}</option>`)}
+              ${defaultOption+cssValsJson[propertyName].map(value=>`<option value="${value}">${value}</option>`)}
             </select>
           </label>`).join('')}
         </div>
@@ -206,9 +194,31 @@ ${(asdf = Array.prototype.includes.call(currentStyle,propertyName)&&currentStyle
       <hr>
       <textarea></textarea>`
 
+  applyFormValues()
   showCSS()
   moveGhosts()
   body.appendChild(ghosts)
+}
+
+/**
+ * Applies the form values by analysing the current style
+ */
+function applyFormValues(){
+  const fieldsets = Array.from(dialog.querySelectorAll('fieldset select'))
+  fieldsets.forEach(sel=>{
+    const name = sel.getAttribute('name')
+    const value = Array.prototype.includes.call(currentStyle,name)&&currentStyle[name]
+    if (value){
+      const unit = value.replace(/^\d+(\w+)$/,'$1')
+      sel.value = unit
+      if (value!==unit){
+        dispatch(sel,'change')
+        const amount = value.replace(unit,'')
+        const sibling = sel.nextElementSibling
+        sibling && (sibling.value = amount)
+      }
+    }
+  })
 }
 
 /**

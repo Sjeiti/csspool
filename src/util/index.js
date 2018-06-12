@@ -80,7 +80,7 @@ export function createElement(querySelector,parentNode,method){
  * @param {string} str
  * @returns {DocumentFragment}
  */
-export function getFragment(str) {
+export function getFragment(str){
     const fragment = document.createDocumentFragment()
     Array.from(wrapHTMLString(str).childNodes).forEach(elm => fragment.appendChild(elm))
     return fragment
@@ -92,8 +92,31 @@ export function getFragment(str) {
  * @param {string} str
  * @returns {HTMLElement}
  */
-function wrapHTMLString(str) {
+function wrapHTMLString(str){
     const div = document.createElement('div')
     div.innerHTML = str
     return div
+}
+
+/**
+ * Dispatch an event on an element
+ * @param {HTMLElement} element
+ * @param {...string} eventTypes
+ */
+export function dispatch(element,...eventTypes){
+    if (typeof Event !== 'function'){ // unfortunate dirty IE11 hack
+        const wasDisabled = element.disabled // IE also refuses to dispatch from disabled elements
+        wasDisabled && (element.disabled = false)
+        eventTypes.forEach(eventType => {
+            const event = document.createEvent('Event')
+            event.initEvent(eventType,true,true)
+            element.dispatchEvent(event)
+        })
+        wasDisabled && (element.disabled = true)
+    } else { // all other browsers work properly
+        eventTypes.forEach(eventType => element.dispatchEvent(new CustomEvent(eventType,{
+            bubbles: true
+            ,cancelable: true
+        })))
+    }
 }
