@@ -16,9 +16,9 @@ const defaultOptions = {
 let ghosts,dialog,alterstyle,lastTarget,newTarget,currentQuerySelector
 
 const csspool = {init}
+export default csspool
 window && (window.csspool = csspool)
 module && (module.exports = csspool)
-export default csspool
 
 /**
  * Initialise
@@ -27,12 +27,14 @@ export default csspool
  * @param {string} [options.lengthUnits]
  */
 function init(options){
-  Object.assign(options||{},defaultOptions)
+  options = Object.assign(options||{},defaultOptions)
   alterstyle = options.styleSheet||createElement('style',body)
+  const {ownerDocument:{body}} = alterstyle
+  const uitarget = options.uitarget||body
   setLengths(options.lengthUnits)
   ghosts = createElement('div',body)
-  dialog = createElement(`dialog.${className.main}.${className.main}--dark`,body)
-  createElement('style',body,style=>style.innerHTML = uiCSS)
+  dialog = createElement(`dialog.${className.main}.${className.main}--dark`,uitarget)
+  createElement('style',uitarget,style=>style.innerHTML = uiCSS)
   //
   body.addEventListener('mousedown',onMouseDownBody,false)
   body.addEventListener('click',onClickBody,false)

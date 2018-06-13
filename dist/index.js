@@ -77,7 +77,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var NAME = exports.NAME = 'CSS Pool';
-var VERSION = exports.VERSION = '0.3.13';
+var VERSION = exports.VERSION = '0.3.15';
 
 /***/ }),
 /* 1 */
@@ -343,9 +343,10 @@ var ghosts = void 0,
     currentQuerySelector = void 0;
 
 var csspool = { init: init };
+exports.default = csspool;
+
 window && (window.csspool = csspool);
 module && (module.exports = csspool);
-exports.default = csspool;
 
 /**
  * Initialise
@@ -353,14 +354,17 @@ exports.default = csspool;
  * @param {HTMLStyleElement} [options.styleSheet]
  * @param {string} [options.lengthUnits]
  */
-
 function init(options) {
-  Object.assign(options || {}, defaultOptions);
+  options = Object.assign(options || {}, defaultOptions);
   alterstyle = options.styleSheet || (0, _util.createElement)('style', body);
+  var _alterstyle = alterstyle,
+      body = _alterstyle.ownerDocument.body;
+
+  var uitarget = options.uitarget || body;
   setLengths(options.lengthUnits);
   ghosts = (0, _util.createElement)('div', body);
-  dialog = (0, _util.createElement)('dialog.' + _uiStyle.className.main + '.' + _uiStyle.className.main + '--dark', body);
-  (0, _util.createElement)('style', body, function (style) {
+  dialog = (0, _util.createElement)('dialog.' + _uiStyle.className.main + '.' + _uiStyle.className.main + '--dark', uitarget);
+  (0, _util.createElement)('style', uitarget, function (style) {
     return style.innerHTML = _uiStyle.css;
   });
   //
@@ -575,10 +579,10 @@ function moveGhosts() {
 function addStyle(prop, value) {
   console.log('addStyle', { prop: prop, value: value }); // todo: remove log
   var querySelector = getBestQuerySelector(lastTarget);
-  var _alterstyle = alterstyle,
-      sheet = _alterstyle.sheet,
-      rules = _alterstyle.sheet.rules,
-      length = _alterstyle.sheet.rules.length;
+  var _alterstyle2 = alterstyle,
+      sheet = _alterstyle2.sheet,
+      rules = _alterstyle2.sheet.rules,
+      length = _alterstyle2.sheet.rules.length;
 
   var rule = Array.from(rules).filter(function (rule) {
     return rule.selectorText === querySelector;
@@ -631,8 +635,8 @@ function getCurrentStyle() {
  * @implement formatCSS for last two replacements
  */
 function showCSS() {
-  var _alterstyle2 = alterstyle,
-      rules = _alterstyle2.sheet.rules;
+  var _alterstyle3 = alterstyle,
+      rules = _alterstyle3.sheet.rules;
 
   dialog.querySelector('textarea').value = Array.from(rules).map(function (rule) {
     return rule.cssText;

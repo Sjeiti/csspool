@@ -1,6 +1,6 @@
 {
   "name": "csspool",
-  "version": "0.3.13",
+  "version": "0.3.15",
   "description": "A simple inline CSS gui",
   "main": "dist/index.js",
   "files": ["dist/index.js"],
