@@ -15,7 +15,10 @@ const defaultOptions = {
 
 let ghosts,dialog,alterstyle,lastTarget,newTarget,currentQuerySelector
 
-window.csspool = {init}
+const csspool = {init}
+window && (window.csspool = csspool)
+module && (module.exports = csspool)
+export default csspool
 
 /**
  * Initialise

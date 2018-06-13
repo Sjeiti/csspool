@@ -1,8 +1,9 @@
 {
   "name": "csspool",
-  "version": "0.3.11",
+  "version": "0.3.13",
   "description": "A simple inline CSS gui",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "files": ["dist/index.js"],
   "scripts": {
     "build": "npm run clean && npm run dir && npm run js",
     "build:watch": "chokidar \"src/**/*.js\" -c \"npm run build\"",

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -77,7 +77,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var NAME = exports.NAME = 'CSS Pool';
-var VERSION = exports.VERSION = '0.3.11';
+var VERSION = exports.VERSION = '0.3.13';
 
 /***/ }),
 /* 1 */
@@ -271,10 +271,42 @@ module.exports = {"positioning":["position","left","top","right","bottom"],"dime
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _uiStyle = __webpack_require__(2);
 
@@ -310,15 +342,19 @@ var ghosts = void 0,
     newTarget = void 0,
     currentQuerySelector = void 0;
 
-window.csspool = { init: init
+var csspool = { init: init };
+window && (window.csspool = csspool);
+module && (module.exports = csspool);
+exports.default = csspool;
 
-  /**
-   * Initialise
-   * @param {Object} options
-   * @param {HTMLStyleElement} [options.styleSheet]
-   * @param {string} [options.lengthUnits]
-   */
-};function init(options) {
+/**
+ * Initialise
+ * @param {Object} options
+ * @param {HTMLStyleElement} [options.styleSheet]
+ * @param {string} [options.lengthUnits]
+ */
+
+function init(options) {
   Object.assign(options || {}, defaultOptions);
   alterstyle = options.styleSheet || (0, _util.createElement)('style', body);
   setLengths(options.lengthUnits);
@@ -611,6 +647,7 @@ function showCSS() {
 function formatCSS(css) {
   return css.replace(/([{;])\s/g, '$1\n  ').replace(/\s*}/g, '\n}\n  ');
 }
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ })
 /******/ ]);
