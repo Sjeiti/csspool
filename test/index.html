@@ -5,6 +5,36 @@
   <title>Title</title>
 </head>
 <body>
+<iframe style="width:100%;height:400px;" srcdoc='<html>
+  <body>
+  <div class="container">
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label>
+      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+      <small id="emailHelp" class="form-text text-muted">We`ll never share your email with anyone else.</small>
+    </div>
+  </div>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css">
+  <style type="text/css">
+    label {
+      padding-left: 10px;
+    }
+    .container.container label {
+      padding-left: 0;
+    }
+  </style>
+  <style type="text/css" data-custom-css>
+    .container label {
+      padding-left: 10px;
+    }
+    .container.container label {
+      position: static;
+      left: 10px;
+    }
+  </style>
+  </body>
+  </html>'></iframe>
+
 <div class="container">
   <form>
     <div class="form-group">
@@ -76,7 +106,7 @@
   </form>
 </div>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css">
-<style type="text/css">
+<!--<style type="text/css">
   label {
     padding-left: 10px;
   }
@@ -84,7 +114,7 @@
     padding-left: 0;
   }
 </style>
-<style type="text/css" data-custom-css>/**/
+<style type="text/css" data-custom-css>
   .container label {
     padding-left: 10px;
   }
@@ -92,10 +122,16 @@
     position: static;
     left: 10px;
   }
-</style>
+</style>-->
 <script src="../dist/index.js"></script>
 <script>
-  csspool.init({styleSheet:document.querySelector('[data-custom-css]')})
+  setTimeout(()=>{
+    const iframe = document.querySelector('iframe')
+    const iframeDoc = iframe.contentWindow.document
+    const styleSheet = iframeDoc.querySelector('[data-custom-css]')
+    console.log('styleSheet',styleSheet) // todo: remove log
+    csspool.init({styleSheet,uitarget:document.body})
+  })
 </script>
 </body>
 </html>

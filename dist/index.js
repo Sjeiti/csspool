@@ -340,7 +340,8 @@ var ghosts = void 0,
     alterstyle = void 0,
     lastTarget = void 0,
     newTarget = void 0,
-    currentQuerySelector = void 0;
+    currentQuerySelector = void 0,
+    styleSheetBody = void 0;
 
 var csspool = { init: init };
 exports.default = csspool;
@@ -358,20 +359,28 @@ function init(options) {
   options = Object.assign(options || {}, defaultOptions);
   alterstyle = options.styleSheet || (0, _util.createElement)('style', body);
   var _alterstyle = alterstyle,
-      body = _alterstyle.ownerDocument.body;
+      ownerDocument = _alterstyle.ownerDocument;
 
+  styleSheetBody = ownerDocument.body;
   var uitarget = options.uitarget || body;
+  //
+  console.log('alterstyle', alterstyle); // todo: remove log
+  console.log('body', body); // todo: remove log
+  console.log('styleSheetBody', styleSheetBody); // todo: remove log
+  console.log('uitarget', uitarget); // todo: remove log
+  //
   setLengths(options.lengthUnits);
-  ghosts = (0, _util.createElement)('div', body);
+  ghosts = (0, _util.createElement)('div');
   dialog = (0, _util.createElement)('dialog.' + _uiStyle.className.main + '.' + _uiStyle.className.main + '--dark', uitarget);
   (0, _util.createElement)('style', uitarget, function (style) {
     return style.innerHTML = _uiStyle.css;
   });
   //
-  body.addEventListener('mousedown', onMouseDownBody, false);
-  body.addEventListener('click', onClickBody, false);
-  body.addEventListener('change', onChange, false);
-  body.addEventListener('input', onInput, false);
+  styleSheetBody.addEventListener('mousedown', onMouseDownBody, false);
+  styleSheetBody.addEventListener('click', onClickBody, false); // todo doubledialog
+  dialog.addEventListener('click', onClickDialog, false); // todo doubledialog
+  dialog.addEventListener('change', onChange, false);
+  dialog.addEventListener('input', onInput, false);
   window.addEventListener('resize', onResize, false);
 }
 
@@ -380,6 +389,7 @@ function init(options) {
  * @param {Event} e
  */
 function onMouseDownBody(e) {
+  console.log('onMouseDownBody'); // todo: remove log
   var target = e.target;
 
   newTarget = target;
@@ -389,13 +399,25 @@ function onMouseDownBody(e) {
  * Click handler
  */
 function onClickBody() {
+  console.log('onClickBody'); // todo: remove log
   var parents = (0, _util.elementAndParents)(newTarget);
   if (!parents.includes(dialog)) {
     dialog.close();
     setDialog(newTarget);
     dialog.showModal();
-  } else if (newTarget.classList.contains(_uiStyle.className.close)) {
-    body.removeChild(ghosts);
+  }
+}
+
+/**
+ * Dialog click handler
+ * @param {Event} e
+ */
+function onClickDialog(e) {
+  console.log('onClickDialog'); // todo: remove log
+  e.preventDefault();
+  var parents = (0, _util.elementAndParents)(newTarget);
+  if (newTarget.classList.contains(_uiStyle.className.close)) {
+    styleSheetBody.removeChild(ghosts);
     dialog.close();
   } else if (newTarget.nodeName === 'BUTTON' && parents.includes(dialog.querySelector('.' + _uiStyle.className.tree))) {
     var lastPparents = (0, _util.elementAndParents)(lastTarget);
@@ -525,7 +547,7 @@ function setDialog(target) {
   applyFormValues();
   showCSS();
   moveGhosts();
-  body.appendChild(ghosts);
+  styleSheetBody.appendChild(ghosts);
 }
 
 /**
@@ -534,6 +556,7 @@ function setDialog(target) {
 function applyFormValues() {
   var fieldsets = Array.from(dialog.querySelectorAll('fieldset select'));
   var currentStyle = getCurrentStyle();
+  console.log('applyFormValues', currentStyle); // todo: remove log
   fieldsets.forEach(function (sel) {
     var name = sel.getAttribute('name');
     var value = Array.prototype.includes.call(currentStyle, name) && currentStyle[name];
@@ -557,7 +580,7 @@ function moveGhosts() {
   if (lastTarget && ghosts.parentNode) {
     while (ghosts.firstChild) {
       ghosts.removeChild(ghosts.firstChild);
-    }Array.from(body.querySelectorAll(currentQuerySelector)).forEach(function (element) {
+    }Array.from(styleSheetBody.querySelectorAll(currentQuerySelector)).forEach(function (element) {
       var rect = element.getBoundingClientRect();
       (0, _util.createElement)('div.' + _uiStyle.className.ghost, ghosts, function (elm) {
         return Object.assign(elm.style, {
@@ -624,6 +647,7 @@ function getBestQuerySelector(element) {
  * @returns {CSSStyleDeclaration}
  */
 function getCurrentStyle() {
+  console.log('currentQuerySelector', currentQuerySelector); // todo: remove log
   var currentRule = Array.from(alterstyle.sheet.cssRules).filter(function (rule) {
     return rule.selectorText === currentQuerySelector;
   }).pop();
