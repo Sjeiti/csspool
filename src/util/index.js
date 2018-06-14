@@ -33,7 +33,7 @@ export function sluggify(s){
  * todo: check //http://www.brothercake.com/site/resources/scripts/cssutilities/
  */
 export function css(el){
-  const sheets = document.styleSheets,ret = []
+  const sheets = el.ownerDocument.styleSheets,ret = []
   el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector || el.oMatchesSelector
   for (let i in sheets){
     try {

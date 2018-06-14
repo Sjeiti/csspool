@@ -1,4 +1,4 @@
-import {css as uiCSS,className} from './config/uiStyle'
+import {css as cssUI,cssGhost,className} from './config/uiStyle'
 import {NAME} from './config'
 import {elementAndParents,css,createElement,getFragment,dispatch} from './util'
 import cssPropsJson from 'json-loader!./config/cssProps.json'
@@ -41,13 +41,14 @@ function init(options){
   setLengths(options.lengthUnits)
   ghosts = createElement('div')
   dialog = createElement(`dialog.${className.main}.${className.main}--dark`,uitarget)
-  createElement('style',uitarget,style=>style.innerHTML = uiCSS)
+  createElement('style',uitarget,style=>style.innerHTML = cssUI)
+  createElement('style',styleSheetBody,style=>style.innerHTML = cssGhost)
   //
   styleSheetBody.addEventListener('mousedown',onMouseDownBody,false)
   styleSheetBody.addEventListener('click',onClickBody,false) // todo doubledialog
   dialog.addEventListener('click',onClickDialog,false) // todo doubledialog
-  dialog.addEventListener('change',onChange,false)
-  dialog.addEventListener('input',onInput,false)
+  dialog.addEventListener('change',onChangeDialog,false)
+  dialog.addEventListener('input',onInputDialog,false)
   window.addEventListener('resize',onResize,false)
 }
 
@@ -80,7 +81,7 @@ function onClickBody(){
  */
 function onClickDialog(e){
   console.log('onClickDialog') // todo: remove log
-  e.preventDefault()
+  //e.preventDefault()
   const parents = elementAndParents(newTarget)
   if (newTarget.classList.contains(className.close)){
     styleSheetBody.removeChild(ghosts)
@@ -97,28 +98,26 @@ function onClickDialog(e){
  * Dialog change handler
  * @param {Event} e
  */
-function onChange(e){
+function onChangeDialog(e){
   const {target} = e
-  const parents = elementAndParents(target)
-  const isDialog = parents.includes(dialog)
-  if (isDialog){
-    const isSelectChildren = target.matches('select[data-children]')
-    const isProp = target.matches('[data-prop]')
-    const isCSS = target.matches('textarea')
-    if (isSelectChildren){
-      const {children} = lastTarget
-      const index = parseInt(target.value,10)
-      const element = children[index]
-      setDialog(element)
-    } else if (isProp){
-      const name = target.getAttribute('name')
-      const value = target.value + (target.getAttribute('data-unit')||'')
-      addStyle(name,value)
-      appendRealValueIput(target)
-      target.style.maxWidth = 'auto'
-    } else if (isCSS){
-      showCSS()
-    }
+  const isSelectChildren = target.matches('select[data-children]')
+  const isProp = target.matches('[data-prop]')
+  const isCSS = target.matches('textarea')
+  console.log('onChangeDialog',{isProp,isCSS}); // todo: remove log
+  if (isSelectChildren){
+    const {children} = lastTarget
+    const index = parseInt(target.value,10)
+    const element = children[index]
+    setDialog(element)
+  } else if (isProp){
+    const name = target.getAttribute('name')
+    const value = target.value + (target.getAttribute('data-unit')||'')
+    addStyle(name,value)
+    appendRealValueIput(target)
+    target.style.maxWidth = 'auto'
+  } else if (isCSS){
+    showCSS()
+    applyFormValues()
   }
 }
 
@@ -126,21 +125,19 @@ function onChange(e){
  * Input event handler
  * @param {Event} e
  */
-function onInput(e){
+function onInputDialog(e){
   const {target} = e
-  const parents = elementAndParents(target)
-  const isDialog = parents.includes(dialog)
-  if (isDialog){
-    const isProp = target.matches('[data-prop]')
-    const isCSS = target.matches('textarea')
-    if (isProp){
-      const name = target.getAttribute('name')
-      const value = target.value + (target.getAttribute('data-unit')||'')
-      addStyle(name,value)
-      appendRealValueIput(target)
-    } else if (isCSS){
-      alterstyle.textContent = target.value
-    }
+  const isProp = target.matches('[data-prop]')
+  const isCSS = target.matches('textarea')
+  console.log('onInputDialog',{isProp,isCSS}); // todo: remove log
+  if (isProp){
+    const name = target.getAttribute('name')
+    const value = target.value + (target.getAttribute('data-unit')||'')
+    addStyle(name,value)
+    appendRealValueIput(target)
+  } else if (isCSS){
+    alterstyle.textContent = target.value
+    // todo apply to props with applyFormValues() only when css is valid and has really changed
   }
 }
 
@@ -230,8 +227,8 @@ function setDialog(target){
 function applyFormValues(){
   const fieldsets = Array.from(dialog.querySelectorAll('fieldset select'))
   const currentStyle = getCurrentStyle()
-  console.log('applyFormValues',currentStyle) // todo: remove log
-  fieldsets.forEach(sel=>{
+  console.log('applyFormValues:currentStyle:',currentStyle) // todo: remove log
+  currentStyle&&fieldsets.forEach(sel=>{
     const name = sel.getAttribute('name')
     const value = Array.prototype.includes.call(currentStyle,name)&&currentStyle[name]
     if (value){
@@ -292,6 +289,7 @@ function addStyle(prop,value){
  * @returns {string}
  */
 function getBestQuerySelector(element){
+  console.log('css(element)',css(element)); // todo: remove log
   return css(element)
       .map(s => s.split(/\s*{/).shift())
       .map(selector => ({selector,value: selector.split(/[.#\s]/g).length}))
@@ -310,11 +308,11 @@ function getBestQuerySelector(element){
 }
 
 /**
- * Get the current style
+ * Get the current style from the own styleSheet that is applied to the currently selected element
  * @returns {CSSStyleDeclaration}
  */
 function getCurrentStyle(){
-  console.log('currentQuerySelector',currentQuerySelector) // todo: remove log
+  console.log('getCurrentStyle',currentQuerySelector) // todo: remove log
   const currentRule = Array.from(alterstyle.sheet.cssRules).filter(rule => rule.selectorText===currentQuerySelector).pop()
   return currentRule && currentRule.style
 }
