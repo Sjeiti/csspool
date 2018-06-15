@@ -11,6 +11,7 @@ const lengthUnits = ['ch','em','ex','rem','em','vh','vw','vmin','vmax','px','cm'
 
 const defaultOptions = {
   lengthUnits: ['px','rem','em','vw','vh']
+  ,fontFamilies: ['serif','sans-serif','monospace','cursive','fantasy','system-ui','inherit','initial','unset']
 }
 
 let ghosts,dialog,alterstyle,lastTarget,newTarget,currentQuerySelector,styleSheetBody
@@ -34,13 +35,18 @@ function init(options){
   const uitarget = options.uitarget||body
   //
   console.log('alterstyle',alterstyle) // todo: remove log
-  console.log('body', body) // todo: remove log
-  console.log('styleSheetBody', styleSheetBody) // todo: remove log
-  console.log('uitarget', uitarget) // todo: remove log
+  console.log('body',body) // todo: remove log
+  console.log('styleSheetBody',styleSheetBody) // todo: remove log
+  console.log('uitarget',uitarget) // todo: remove log
   //
-  setLengths(options.lengthUnits)
+  const cssOptionsMap = new Map()
+  cssOptionsMap.set('length',options.lengthUnits)
+  cssOptionsMap.set(/generic-family$/,options.fontFamilies)
+  cssOptionsMap.set(/^\d+(\s+\d+)+$/,m=>m.split(/\s+/g))
+  setCSSValueOptions(cssOptionsMap)
+  //
   ghosts = createElement('div')
-  dialog = createElement(`dialog.${className.main}.${className.main}--dark`,uitarget)
+  dialog = createElement(`dialog.${className.main}${options.style?`.${className.main}--${options.style}`:''}`,uitarget)
   createElement('style',uitarget,style=>style.innerHTML = cssUI)
   createElement('style',styleSheetBody,style=>style.innerHTML = cssGhost)
   //
@@ -103,7 +109,7 @@ function onChangeDialog(e){
   const isSelectChildren = target.matches('select[data-children]')
   const isProp = target.matches('[data-prop]')
   const isCSS = target.matches('textarea')
-  console.log('onChangeDialog',{isProp,isCSS}); // todo: remove log
+  console.log('onChangeDialog',{isProp,isCSS}) // todo: remove log
   if (isSelectChildren){
     const {children} = lastTarget
     const index = parseInt(target.value,10)
@@ -129,7 +135,7 @@ function onInputDialog(e){
   const {target} = e
   const isProp = target.matches('[data-prop]')
   const isCSS = target.matches('textarea')
-  console.log('onInputDialog',{isProp,isCSS}); // todo: remove log
+  console.log('onInputDialog',{isProp,isCSS}) // todo: remove log
   if (isProp){
     const name = target.getAttribute('name')
     const value = target.value + (target.getAttribute('data-unit')||'')
@@ -150,12 +156,30 @@ function onResize(){
 
 /**
  * Map lengths to units
- * @param {string[]} lengths
+ * @param {object} map
  */
-function setLengths(lengths){
+function setCSSValueOptions(map){
   Object.values(cssValsJson).forEach(list=>{
-    const index = list.indexOf('length')
-    index!==-1&&list.splice(index,1,...lengths)
+    map.forEach((value,key)=>{
+      const keyType = typeof key
+      const valueType = typeof value
+      if (keyType === 'string'){
+        const index = list.indexOf(key)
+        index!==-1&&list.splice(index,1,...value)
+      } if (key.constructor===RegExp){
+        const toSplice = []
+        list.forEach((option,i)=>{
+          const match = option.match(key)
+          if (match){
+            Array.isArray(value)&&(toSplice[i] = value)
+            valueType==='function'&&(toSplice[i] = value(option))
+          }
+        })
+        toSplice.forEach((options,i)=>{ // todo better in reverse if list has multiple matches
+          options&&Array.isArray(options)&&list.splice(i,1,...options)
+        })
+      }
+    })
   })
 }
 
@@ -289,7 +313,7 @@ function addStyle(prop,value){
  * @returns {string}
  */
 function getBestQuerySelector(element){
-  console.log('css(element)',css(element)); // todo: remove log
+  console.log('css(element)',css(element)) // todo: remove log
   return css(element)
       .map(s => s.split(/\s*{/).shift())
       .map(selector => ({selector,value: selector.split(/[.#\s]/g).length}))

@@ -77,7 +77,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var NAME = exports.NAME = 'CSS Pool';
-var VERSION = exports.VERSION = '0.3.15';
+var VERSION = exports.VERSION = '0.3.16';
 
 /***/ }),
 /* 1 */
@@ -310,6 +310,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _uiStyle = __webpack_require__(2);
 
 var _config = __webpack_require__(0);
@@ -334,7 +336,8 @@ var px = 'px';
 var lengthUnits = ['ch', 'em', 'ex', 'rem', 'em', 'vh', 'vw', 'vmin', 'vmax', 'px', 'cm', 'mm', 'in', 'pc', 'pt'];
 
 var defaultOptions = {
-  lengthUnits: ['px', 'rem', 'em', 'vw', 'vh']
+  lengthUnits: ['px', 'rem', 'em', 'vw', 'vh'],
+  fontFamilies: ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui', 'inherit', 'initial', 'unset']
 };
 
 var ghosts = void 0,
@@ -371,9 +374,16 @@ function init(options) {
   console.log('styleSheetBody', styleSheetBody); // todo: remove log
   console.log('uitarget', uitarget); // todo: remove log
   //
-  setLengths(options.lengthUnits);
+  var cssOptionsMap = new Map();
+  cssOptionsMap.set('length', options.lengthUnits);
+  cssOptionsMap.set(/generic-family$/, options.fontFamilies);
+  cssOptionsMap.set(/^\d+(\s+\d+)+$/, function (m) {
+    return m.split(/\s+/g);
+  });
+  setCSSValueOptions(cssOptionsMap);
+  //
   ghosts = (0, _util.createElement)('div');
-  dialog = (0, _util.createElement)('dialog.' + _uiStyle.className.main + '.' + _uiStyle.className.main + '--dark', uitarget);
+  dialog = (0, _util.createElement)('dialog.' + _uiStyle.className.main + (options.style ? '.' + _uiStyle.className.main + '--' + options.style : ''), uitarget);
   (0, _util.createElement)('style', uitarget, function (style) {
     return style.innerHTML = _uiStyle.css;
   });
@@ -492,12 +502,31 @@ function onResize() {
 
 /**
  * Map lengths to units
- * @param {string[]} lengths
+ * @param {object} map
  */
-function setLengths(lengths) {
+function setCSSValueOptions(map) {
   Object.values(_cssPropValues2.default).forEach(function (list) {
-    var index = list.indexOf('length');
-    index !== -1 && list.splice.apply(list, [index, 1].concat(_toConsumableArray(lengths)));
+    map.forEach(function (value, key) {
+      var keyType = typeof key === 'undefined' ? 'undefined' : _typeof(key);
+      var valueType = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+      if (keyType === 'string') {
+        var index = list.indexOf(key);
+        index !== -1 && list.splice.apply(list, [index, 1].concat(_toConsumableArray(value)));
+      }if (key.constructor === RegExp) {
+        var toSplice = [];
+        list.forEach(function (option, i) {
+          var match = option.match(key);
+          if (match) {
+            Array.isArray(value) && (toSplice[i] = value);
+            valueType === 'function' && (toSplice[i] = value(option));
+          }
+        });
+        toSplice.forEach(function (options, i) {
+          // todo better in reverse if list has multiple matches
+          options && Array.isArray(options) && list.splice.apply(list, [i, 1].concat(_toConsumableArray(options)));
+        });
+      }
+    });
   });
 }
 
