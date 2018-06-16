@@ -255,9 +255,9 @@ var className = exports.className = {
   selectors: name + 'selectors'
 };
 
-var css = exports.css = '\n  @import url(\'https://fonts.googleapis.com/css?family=Source+Code+Pro\');\n\n\n  dialog.' + name + ' {\n  \n    --color-font: #333;\n    --color-input-background: #FFF;\n    --color-background1: #FFF;\n    --color-background2: #EEE;\n    --color-border: #CCC;\n    --color-hr: #333;\n    \n    position: absolute;\n    left: auto;\n    right: 0;\n    top: 0;\n    padding: 20px 10px 10px;\n    min-width: 200px;\n    min-height: 200px;\n    border: 0;\n    border-radius: 2px;\n    box-shadow: 1px 4px 16px rgba(0,0,0,0.3), 0 0 0 1px red;\n    background: linear-gradient(var(--color-background1), var(--color-background2));\n    overflow: hidden;\n  }\n  dialog.' + name + '::backdrop {\n    background-color: transparent;\n  }\n  dialog.' + name + ' * {\n    position: initial;\n    left: initial;\n    top: initial;\n    bottom: initial;\n    right: initial;\n    margin: initial;\n    padding: initial;\n    font-size: 12px;\n    line-height: 140%;\n    font-family: Source Code Pro,monospace;\n    color: var(--color-font);\n    border-color: var(--color-border);\n  }\n  dialog.' + name + '--dark input, dialog.' + name + '--dark textarea, dialog.' + name + '--dark select {\n    background-color: var(--color-input-background);\n  }\n  \n  dialog.' + name + '--dark {\n    --color-font: #FFC66D;\n    --color-input-background: #2B2B2B;\n    --color-background1: #3C3F41;\n    --color-background2: #313335;\n    --color-border: #333;\n    --color-hr: #FFC66D;\n  }\n  \n  dialog.' + name + ' h3, dialog.' + name + ' .' + className.close + ' {\n    position: absolute;\n    top: 2px;\n    line-height: 100%;\n    font-weight: bold;\n  }\n  dialog.' + name + ' h3 {\n    left: 4px;\n  }\n  dialog.' + name + ' .' + className.close + ' {\n    right: 4px;\n    border: 0;\n    background: transparent;\n  }\n  dialog.' + name + ' .' + className.close + ':after {\n    content: \'\u2716\';\n  }\n  dialog.' + name + ' .' + className.current + ' {\n    box-shadow: 0 0 0 1px #F04;\n  }\n  \n  dialog.' + name + ' hr {\n    margin: 8px 0;\n    border: 0;\n    height: 1px;\n    background-color: var(--color-hr);\n    box-shadow: 100px 0 0 var(--color-hr),  -100px 0 0 var(--color-hr);\n  }\n  \n  dialog.' + name + ' .' + className.tree + ' {\n    display: block;\n    padding: 0;\n  }\n  dialog.' + name + ' .' + className.tree + ' li {\n    display: inline-block;\n  }\n  dialog.' + name + ' .' + className.tree + ' li.current button {\n    font-weight: bold;\n  }\n  dialog.' + name + ' .' + className.tree + ' button, .' + className.tree + ' select, .' + className.tree + ' option {\n    text-transform: lowercase;\n  }\n  dialog.' + name + ' .' + className.tree + ' li:not(:first-child):before {\n    content: \'>\';\n  }\n  dialog.' + name + ' .' + className.tree + ' button {\n    border: 0;\n    background: transparent;\n    padding: 0;\n  }\n  \n  dialog.' + name + ' .' + className.selectors + ' .current {\n    font-weight: bold;\n  }\n  \n  dialog.' + name + ' legend {\n    display: block;\n    width: 100%;\n    box-shadow: 0 1px 0 var(--color-border), 0 -1px 0 var(--color-border);\n    cursor: pointer;\n    font-weight: bold;\n  }\n  dialog.' + name + ' .collapse+label+div {\n    display: none;\n  }\n  dialog.' + name + ' .collapse+label {\n    display: block;\n  }\n  dialog.' + name + ' .collapse+label legend:after {\n    content: \'>\';\n    display: inline-block;\n    margin-left: 10px;\n  }\n  dialog.' + name + ' .collapse:checked+label+div {\n    display: block;\n    margin: 8px 0;\n  }\n  dialog.' + name + ' .collapse:checked+label legend:after {\n    transform: rotate(90deg); \n  }\n  \n  dialog.' + name + ' label {\n    display: flex;\n  }\n  dialog.' + name + ' fieldset div label>* {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  dialog.' + name + ' fieldset div label>*:nth-child(1) {\n    flex: 30% 0 0;\n    max-width: 30%;\n    order: 1;\n  }\n  dialog.' + name + ' fieldset div label>*:nth-child(2) {\n    flex: 40px 1 0;\n    /*max-width: 40px;*/\n    order: 3;\n  }\n  dialog.' + name + ' fieldset div label>*:nth-child(3) {\n    flex: auto 1 1;\n    order: 2;\n  }\n  \n  dialog.' + name + ' textarea {\n    width: 100%;\n    min-height: 150px;\n  }\n  \n  .' + className.ghost + ' {\n    position: absolute;\n    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);\n  }\n  \n  .visually-hidden {\n    position: absolute !important;\n    clip: rect(1px, 1px, 1px, 1px);\n    padding:0 !important;\n    border:0 !important;\n    height: 1px !important; \n    width: 1px !important; \n    overflow: hidden;\n  }\n';
+var css = exports.css = '\n  @import url(\'https://fonts.googleapis.com/css?family=Source+Code+Pro\');\n\n  .' + name + ' {\n  \n    --color-font: #333;\n    --color-input-background: #FFF;\n    --color-background1: #FFF;\n    --color-background2: #EEE;\n    --color-border: #CCC;\n    --color-hr: #333;\n    \n    position: absolute;\n    left: auto;\n    right: 0;\n    top: 0;\n    padding: 20px 10px 10px;\n    min-width: 200px;\n    min-height: 200px;\n    border: 0;\n    border-radius: 2px;\n    box-shadow: 1px 4px 16px rgba(0,0,0,0.3), 0 0 0 1px red;\n    background: linear-gradient(var(--color-background1), var(--color-background2));\n    overflow: hidden;\n  }\n  .' + name + '::backdrop {\n    background-color: transparent;\n  }\n  .' + name + ' * {\n    position: initial;\n    left: initial;\n    top: initial;\n    bottom: initial;\n    right: initial;\n    margin: initial;\n    padding: initial;\n    font-size: 12px;\n    line-height: 140%;\n    font-family: Source Code Pro,monospace;\n    color: var(--color-font);\n    border-color: var(--color-border);\n  }\n  .' + name + '--dark input, .' + name + '--dark textarea, .' + name + '--dark select {\n    background-color: var(--color-input-background);\n  }\n  .' + name + '--inline {\n    position: relative;\n    right: auto;\n    top: auto;\n    box-shadow: none;\n    background: none;\n  }\n  .' + name + '--dark {\n    --color-font: #FFC66D;\n    --color-input-background: #2B2B2B;\n    --color-background1: #3C3F41;\n    --color-background2: #313335;\n    --color-border: #333;\n    --color-hr: #FFC66D;\n  }\n  \n  .' + name + ' h3, .' + name + ' .' + className.close + ' {\n    position: absolute;\n    top: 2px;\n    line-height: 100%;\n    font-weight: bold;\n  }\n  .' + name + ' h3 {\n    left: 4px;\n  }\n  .' + name + ' .' + className.close + ' {\n    right: 4px;\n    border: 0;\n    background: transparent;\n  }\n  .' + name + ' .' + className.close + ':after {\n    content: \'\u2716\';\n  }\n  .' + name + ' .' + className.current + ' {\n    box-shadow: 0 0 0 1px #F04;\n  }\n  \n  .' + name + ' hr {\n    margin: 8px 0;\n    border: 0;\n    height: 1px;\n    background-color: var(--color-hr);\n    box-shadow: 100px 0 0 var(--color-hr),  -100px 0 0 var(--color-hr);\n  }\n  \n  .' + name + ' .' + className.tree + ' {\n    display: block;\n    padding: 0;\n  }\n  .' + name + ' .' + className.tree + ' li {\n    display: inline-block;\n  }\n  .' + name + ' .' + className.tree + ' li.current button {\n    font-weight: bold;\n  }\n  .' + name + ' .' + className.tree + ' button, .' + className.tree + ' select, .' + className.tree + ' option {\n    text-transform: lowercase;\n  }\n  .' + name + ' .' + className.tree + ' li:not(:first-child):before {\n    content: \'>\';\n  }\n  .' + name + ' .' + className.tree + ' button {\n    border: 0;\n    background: transparent;\n    padding: 0;\n    box-shadow: none;\n  }\n  \n  .' + name + ' .' + className.selectors + ' .current {\n    font-weight: bold;\n  }\n  \n  .' + name + ' legend {\n    display: block;\n    width: 100%;\n    box-shadow: 0 1px 0 var(--color-border), 0 -1px 0 var(--color-border);\n    cursor: pointer;\n    font-weight: bold;\n  }\n  .' + name + ' .collapse+label+div {\n    display: none;\n  }\n  .' + name + ' .collapse+label {\n    display: block;\n  }\n  .' + name + ' .collapse+label legend:after {\n    content: \'>\';\n    display: inline-block;\n    margin-left: 10px;\n  }\n  .' + name + ' .collapse:checked+label+div {\n    display: block;\n    margin: 8px 0;\n  }\n  .' + name + ' .collapse:checked+label legend:after {\n    transform: rotate(90deg); \n  }\n  \n  .' + name + ' label {\n    display: flex;\n  }\n  .' + name + ' fieldset {\n    border: 0;\n  }\n  .' + name + ' fieldset div label>* {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .' + name + ' fieldset div label>*:nth-child(1) {\n    flex: 30% 0 0;\n    max-width: 30%;\n    order: 1;\n  }\n  .' + name + ' fieldset div label>*:nth-child(2) {\n    flex: 40px 1 0;\n    /*max-width: 40px;*/\n    order: 3;\n  }\n  .' + name + ' fieldset div label>*:nth-child(3) {\n    flex: auto 1 1;\n    order: 2;\n  }\n  \n  .' + name + ' textarea {\n    width: 100%;\n    min-height: 150px;\n  }\n  \n  .' + className.ghost + ' {\n    position: absolute;\n    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);\n  }\n  \n  .visually-hidden {\n    position: absolute !important;\n    clip: rect(1px, 1px, 1px, 1px);\n    padding:0 !important;\n    border:0 !important;\n    height: 1px !important; \n    width: 1px !important; \n    overflow: hidden;\n  }\n';
 
-var cssGhost = exports.cssGhost = '\n  .' + className.ghost + ' {\n    position: absolute;\n    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);\n  }\n';
+var cssGhost = exports.cssGhost = '\n  .' + className.ghost + ' {\n    position: absolute;\n    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);\n    pointer-events: none;\n  }\n';
 
 /***/ }),
 /* 3 */
@@ -337,7 +337,8 @@ var lengthUnits = ['ch', 'em', 'ex', 'rem', 'em', 'vh', 'vw', 'vmin', 'vmax', 'p
 
 var defaultOptions = {
   lengthUnits: ['px', 'rem', 'em', 'vw', 'vh'],
-  fontFamilies: ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui', 'inherit', 'initial', 'unset']
+  fontFamilies: ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui', 'inherit', 'initial', 'unset'],
+  inline: false
 };
 
 var ghosts = void 0,
@@ -361,29 +362,35 @@ module && (module.exports = csspool);
  * @param {string} [options.lengthUnits]
  */
 function init(options) {
-  options = Object.assign(options || {}, defaultOptions);
+  options = Object.assign({}, defaultOptions, options || {});
   alterstyle = options.styleSheet || (0, _util.createElement)('style', body);
   var _alterstyle = alterstyle,
       ownerDocument = _alterstyle.ownerDocument;
 
   styleSheetBody = ownerDocument.body;
   var uitarget = options.uitarget || body;
+  var _options = options,
+      lengthUnits = _options.lengthUnits,
+      fontFamilies = _options.fontFamilies,
+      inline = _options.inline;
   //
+
   console.log('alterstyle', alterstyle); // todo: remove log
   console.log('body', body); // todo: remove log
   console.log('styleSheetBody', styleSheetBody); // todo: remove log
   console.log('uitarget', uitarget); // todo: remove log
+  console.log('inline', inline); // todo: remove log
   //
   var cssOptionsMap = new Map();
-  cssOptionsMap.set('length', options.lengthUnits);
-  cssOptionsMap.set(/generic-family$/, options.fontFamilies);
+  cssOptionsMap.set('length', lengthUnits);
+  cssOptionsMap.set(/generic-family$/, fontFamilies);
   cssOptionsMap.set(/^\d+(\s+\d+)+$/, function (m) {
     return m.split(/\s+/g);
   });
   setCSSValueOptions(cssOptionsMap);
   //
   ghosts = (0, _util.createElement)('div');
-  dialog = (0, _util.createElement)('dialog.' + _uiStyle.className.main + (options.style ? '.' + _uiStyle.className.main + '--' + options.style : ''), uitarget);
+  dialog = (0, _util.createElement)((inline ? 'div' : 'dialog') + '.' + _uiStyle.className.main + (options.style ? '.' + _uiStyle.className.main + '--' + options.style : '') + (inline ? '.' + _uiStyle.className.main + '--inline' : ''), uitarget);
   (0, _util.createElement)('style', uitarget, function (style) {
     return style.innerHTML = _uiStyle.css;
   });
@@ -392,8 +399,8 @@ function init(options) {
   });
   //
   styleSheetBody.addEventListener('mousedown', onMouseDownBody, false);
-  styleSheetBody.addEventListener('click', onClickBody, false); // todo doubledialog
-  dialog.addEventListener('click', onClickDialog, false); // todo doubledialog
+  styleSheetBody.addEventListener('click', onClickBody, false);
+  dialog.addEventListener('click', onClickDialog, false);
   dialog.addEventListener('change', onChangeDialog, false);
   dialog.addEventListener('input', onInputDialog, false);
   window.addEventListener('resize', onResize, false);
@@ -417,9 +424,9 @@ function onClickBody() {
   console.log('onClickBody'); // todo: remove log
   var parents = (0, _util.elementAndParents)(newTarget);
   if (!parents.includes(dialog)) {
-    dialog.close();
+    dialog.close && dialog.close();
     setDialog(newTarget);
-    dialog.showModal();
+    dialog.showModal && dialog.showModal();
   }
 }
 
@@ -428,15 +435,17 @@ function onClickBody() {
  * @param {Event} e
  */
 function onClickDialog(e) {
-  console.log('onClickDialog'); // todo: remove log
   //e.preventDefault()
-  var parents = (0, _util.elementAndParents)(newTarget);
-  if (newTarget.classList.contains(_uiStyle.className.close)) {
+  var target = e.target;
+
+  var parents = (0, _util.elementAndParents)(target);
+  console.log('onClickDialog', target); // todo: remove log
+  if (target.classList.contains(_uiStyle.className.close)) {
     styleSheetBody.removeChild(ghosts);
-    dialog.close();
-  } else if (newTarget.nodeName === 'BUTTON' && parents.includes(dialog.querySelector('.' + _uiStyle.className.tree))) {
+    dialog.close && dialog.close();
+  } else if (target.nodeName === 'BUTTON' && parents.includes(dialog.querySelector('.' + _uiStyle.className.tree))) {
     var lastPparents = (0, _util.elementAndParents)(lastTarget);
-    var index = parseInt(newTarget.getAttribute('data-index'), 10);
+    var index = parseInt(target.getAttribute('data-index'), 10);
     var element = lastPparents[lastPparents.length - 1 - index];
     setDialog(element);
   }
@@ -667,7 +676,7 @@ function getBestQuerySelector(element) {
   }, { selector: '', value: 0 }).selector || (0, _util.elementAndParents)(element).reverse().splice(2).map(function (elm) {
     var id = elm.getAttribute('id');
     var classes = elm.getAttribute('class');
-    return id && '#' + id || classes && classes.split(/\s/g).map(function (c) {
+    return id && '#' + id || classes && classes.split(/\s+/g).map(function (c) {
       return '.' + c;
     }).join('') || elm.nodeName.toLowerCase();
   }).join(' ');

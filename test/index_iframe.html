@@ -97,10 +97,28 @@
     }
   </style>
 </div>
+<iframe></iframe>
+<style>
+  body, html {
+    height: 100%;
+  }
+  iframe {
+    height: calc(100% - 16px);
+    width: calc(100% - 16px);
+  }
+</style>
+
 <script src="../dist/index.js"></script>
 <script>
+  const iframe = document.querySelector('iframe')
+  const iframeDoc = iframe.contentWindow.document
+  iframeDoc.body.appendChild(document.querySelector('[data-html]'))
+  const styleSheet = iframeDoc.querySelector('[data-custom-css]')
+  console.log('iframeDoc',iframeDoc) // todo: remove log
+  console.log('styleSheet',styleSheet) // todo: remove log
   csspool.init({
-    styleSheet: document.querySelector('[data-custom-css]')
+    styleSheet
+    ,uitarget: document.body
   })
 </script>
 </body>

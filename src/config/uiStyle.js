@@ -15,8 +15,7 @@ export const className = {
 export const css = `
   @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
 
-
-  dialog.${name} {
+  .${name} {
   
     --color-font: #333;
     --color-input-background: #FFF;
@@ -38,10 +37,10 @@ export const css = `
     background: linear-gradient(var(--color-background1), var(--color-background2));
     overflow: hidden;
   }
-  dialog.${name}::backdrop {
+  .${name}::backdrop {
     background-color: transparent;
   }
-  dialog.${name} * {
+  .${name} * {
     position: initial;
     left: initial;
     top: initial;
@@ -55,11 +54,17 @@ export const css = `
     color: var(--color-font);
     border-color: var(--color-border);
   }
-  dialog.${name}--dark input, dialog.${name}--dark textarea, dialog.${name}--dark select {
+  .${name}--dark input, .${name}--dark textarea, .${name}--dark select {
     background-color: var(--color-input-background);
   }
-  
-  dialog.${name}--dark {
+  .${name}--inline {
+    position: relative;
+    right: auto;
+    top: auto;
+    box-shadow: none;
+    background: none;
+  }
+  .${name}--dark {
     --color-font: #FFC66D;
     --color-input-background: #2B2B2B;
     --color-background1: #3C3F41;
@@ -68,28 +73,28 @@ export const css = `
     --color-hr: #FFC66D;
   }
   
-  dialog.${name} h3, dialog.${name} .${className.close} {
+  .${name} h3, .${name} .${className.close} {
     position: absolute;
     top: 2px;
     line-height: 100%;
     font-weight: bold;
   }
-  dialog.${name} h3 {
+  .${name} h3 {
     left: 4px;
   }
-  dialog.${name} .${className.close} {
+  .${name} .${className.close} {
     right: 4px;
     border: 0;
     background: transparent;
   }
-  dialog.${name} .${className.close}:after {
+  .${name} .${className.close}:after {
     content: '✖';
   }
-  dialog.${name} .${className.current} {
+  .${name} .${className.current} {
     box-shadow: 0 0 0 1px #F04;
   }
   
-  dialog.${name} hr {
+  .${name} hr {
     margin: 8px 0;
     border: 0;
     height: 1px;
@@ -97,82 +102,86 @@ export const css = `
     box-shadow: 100px 0 0 var(--color-hr),  -100px 0 0 var(--color-hr);
   }
   
-  dialog.${name} .${className.tree} {
+  .${name} .${className.tree} {
     display: block;
     padding: 0;
   }
-  dialog.${name} .${className.tree} li {
+  .${name} .${className.tree} li {
     display: inline-block;
   }
-  dialog.${name} .${className.tree} li.current button {
+  .${name} .${className.tree} li.current button {
     font-weight: bold;
   }
-  dialog.${name} .${className.tree} button, .${className.tree} select, .${className.tree} option {
+  .${name} .${className.tree} button, .${className.tree} select, .${className.tree} option {
     text-transform: lowercase;
   }
-  dialog.${name} .${className.tree} li:not(:first-child):before {
+  .${name} .${className.tree} li:not(:first-child):before {
     content: '>';
   }
-  dialog.${name} .${className.tree} button {
+  .${name} .${className.tree} button {
     border: 0;
     background: transparent;
     padding: 0;
+    box-shadow: none;
   }
   
-  dialog.${name} .${className.selectors} .current {
+  .${name} .${className.selectors} .current {
     font-weight: bold;
   }
   
-  dialog.${name} legend {
+  .${name} legend {
     display: block;
     width: 100%;
     box-shadow: 0 1px 0 var(--color-border), 0 -1px 0 var(--color-border);
     cursor: pointer;
     font-weight: bold;
   }
-  dialog.${name} .collapse+label+div {
+  .${name} .collapse+label+div {
     display: none;
   }
-  dialog.${name} .collapse+label {
+  .${name} .collapse+label {
     display: block;
   }
-  dialog.${name} .collapse+label legend:after {
+  .${name} .collapse+label legend:after {
     content: '>';
     display: inline-block;
     margin-left: 10px;
   }
-  dialog.${name} .collapse:checked+label+div {
+  .${name} .collapse:checked+label+div {
     display: block;
     margin: 8px 0;
   }
-  dialog.${name} .collapse:checked+label legend:after {
+  .${name} .collapse:checked+label legend:after {
     transform: rotate(90deg); 
   }
   
-  dialog.${name} label {
+  .${name} label {
     display: flex;
   }
-  dialog.${name} fieldset div label>* {
+  .${name} fieldset {
+    border: 0;
+  }
+  .${name} fieldset div label>* {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  dialog.${name} fieldset div label>*:nth-child(1) {
+  .${name} fieldset div label>*:nth-child(1) {
     flex: 30% 0 0;
     max-width: 30%;
     order: 1;
   }
-  dialog.${name} fieldset div label>*:nth-child(2) {
+  .${name} fieldset div label>*:nth-child(2) {
     flex: 40px 1 0;
     /*max-width: 40px;*/
     order: 3;
   }
-  dialog.${name} fieldset div label>*:nth-child(3) {
+  .${name} fieldset div label>*:nth-child(3) {
     flex: auto 1 1;
     order: 2;
   }
   
-  dialog.${name} textarea {
+  .${name} textarea {
     width: 100%;
     min-height: 150px;
   }
@@ -197,5 +206,6 @@ export const cssGhost = `
   .${className.ghost} {
     position: absolute;
     box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);
+    pointer-events: none;
   }
 `

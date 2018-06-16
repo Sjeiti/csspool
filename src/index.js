@@ -12,6 +12,7 @@ const lengthUnits = ['ch','em','ex','rem','em','vh','vw','vmin','vmax','px','cm'
 const defaultOptions = {
   lengthUnits: ['px','rem','em','vw','vh']
   ,fontFamilies: ['serif','sans-serif','monospace','cursive','fantasy','system-ui','inherit','initial','unset']
+  ,inline: false
 }
 
 let ghosts,dialog,alterstyle,lastTarget,newTarget,currentQuerySelector,styleSheetBody
@@ -28,31 +29,33 @@ module && (module.exports = csspool)
  * @param {string} [options.lengthUnits]
  */
 function init(options){
-  options = Object.assign(options||{},defaultOptions)
+  options = Object.assign({},defaultOptions,options||{})
   alterstyle = options.styleSheet||createElement('style',body)
   const {ownerDocument} = alterstyle
   styleSheetBody = ownerDocument.body
   const uitarget = options.uitarget||body
+  const {lengthUnits,fontFamilies,inline} = options
   //
   console.log('alterstyle',alterstyle) // todo: remove log
   console.log('body',body) // todo: remove log
   console.log('styleSheetBody',styleSheetBody) // todo: remove log
   console.log('uitarget',uitarget) // todo: remove log
+  console.log('inline',inline) // todo: remove log
   //
   const cssOptionsMap = new Map()
-  cssOptionsMap.set('length',options.lengthUnits)
-  cssOptionsMap.set(/generic-family$/,options.fontFamilies)
+  cssOptionsMap.set('length',lengthUnits)
+  cssOptionsMap.set(/generic-family$/,fontFamilies)
   cssOptionsMap.set(/^\d+(\s+\d+)+$/,m=>m.split(/\s+/g))
   setCSSValueOptions(cssOptionsMap)
   //
   ghosts = createElement('div')
-  dialog = createElement(`dialog.${className.main}${options.style?`.${className.main}--${options.style}`:''}`,uitarget)
+  dialog = createElement(`${inline?'div':'dialog'}.${className.main}${options.style?`.${className.main}--${options.style}`:''}${inline?`.${className.main}--inline`:''}`,uitarget)
   createElement('style',uitarget,style=>style.innerHTML = cssUI)
   createElement('style',styleSheetBody,style=>style.innerHTML = cssGhost)
   //
   styleSheetBody.addEventListener('mousedown',onMouseDownBody,false)
-  styleSheetBody.addEventListener('click',onClickBody,false) // todo doubledialog
-  dialog.addEventListener('click',onClickDialog,false) // todo doubledialog
+  styleSheetBody.addEventListener('click',onClickBody,false)
+  dialog.addEventListener('click',onClickDialog,false)
   dialog.addEventListener('change',onChangeDialog,false)
   dialog.addEventListener('input',onInputDialog,false)
   window.addEventListener('resize',onResize,false)
@@ -75,9 +78,9 @@ function onClickBody(){
   console.log('onClickBody') // todo: remove log
   const parents = elementAndParents(newTarget)
   if (!parents.includes(dialog)){
-    dialog.close()
+    dialog.close&&dialog.close()
     setDialog(newTarget)
-    dialog.showModal()
+    dialog.showModal&&dialog.showModal()
   }
 }
 
@@ -86,15 +89,16 @@ function onClickBody(){
  * @param {Event} e
  */
 function onClickDialog(e){
-  console.log('onClickDialog') // todo: remove log
   //e.preventDefault()
-  const parents = elementAndParents(newTarget)
-  if (newTarget.classList.contains(className.close)){
+  const {target} = e
+  const parents = elementAndParents(target)
+  console.log('onClickDialog', target) // todo: remove log
+  if (target.classList.contains(className.close)){
     styleSheetBody.removeChild(ghosts)
-    dialog.close()
-  } else if (newTarget.nodeName==='BUTTON'&&parents.includes(dialog.querySelector(`.${className.tree}`))){
+    dialog.close&&dialog.close()
+  } else if (target.nodeName==='BUTTON'&&parents.includes(dialog.querySelector(`.${className.tree}`))){
     const lastPparents = elementAndParents(lastTarget)
-    const index = parseInt(newTarget.getAttribute('data-index'),10)
+    const index = parseInt(target.getAttribute('data-index'),10)
     const element = lastPparents[lastPparents.length-1-index]
     setDialog(element)
   }
@@ -326,7 +330,7 @@ function getBestQuerySelector(element){
       .map(elm => {
         const id = elm.getAttribute('id')
         const classes = elm.getAttribute('class')
-        return id&&`#${id}`||classes&&classes.split(/\s/g).map(c=>`.${c}`).join('')||elm.nodeName.toLowerCase()
+        return id&&`#${id}`||classes&&classes.split(/\s+/g).map(c=>`.${c}`).join('')||elm.nodeName.toLowerCase()
       })
       .join(' ')
 }
