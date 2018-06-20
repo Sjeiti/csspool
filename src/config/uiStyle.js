@@ -6,6 +6,7 @@ const name = sluggify(NAME)
 export const className = {
   main: `${name}`
   ,ghost: `${name}ghost`
+  ,ghostHandle: `${name}ghostHandle`
   ,close: `${name}close`
   ,current: `${name}current`
   ,tree: `${name}tree`
@@ -22,7 +23,7 @@ export const css = `
     --color-background1: #FFF;
     --color-background2: #EEE;
     --color-border: #CCC;
-    --color-hr: #333;
+    --colord-hr: #999;
     
     position: absolute;
     left: auto;
@@ -102,6 +103,11 @@ export const css = `
     box-shadow: 100px 0 0 var(--color-hr),  -100px 0 0 var(--color-hr);
   }
   
+  .${name} input, .${name} select, .${name} textarea {
+    border: 0;
+    box-shadow: 2px 4px 16px rgba(0,0,0,0.1) inset, 0 0 1px #999 inset;
+  }
+  
   .${name} .${className.tree} {
     display: block;
     padding: 0;
@@ -132,7 +138,7 @@ export const css = `
   .${name} legend {
     display: block;
     width: 100%;
-    box-shadow: 0 1px 0 var(--color-border), 0 -1px 0 var(--color-border);
+    box-shadow: 0 -1px 0 var(--color-border);
     cursor: pointer;
     font-weight: bold;
   }
@@ -186,11 +192,6 @@ export const css = `
     min-height: 150px;
   }
   
-  .${className.ghost} {
-    position: absolute;
-    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);
-  }
-  
   .visually-hidden {
     position: absolute !important;
     clip: rect(1px, 1px, 1px, 1px);
@@ -202,10 +203,20 @@ export const css = `
   }
 `
 
+const handleSize = 12
 export const cssGhost = `
   .${className.ghost} {
     position: absolute;
     box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);
     pointer-events: none;
+  }
+  .${className.ghostHandle} {
+    position: absolute;
+    width: ${handleSize}px;
+    height: ${handleSize}px;
+    transform: translate(-${handleSize/2}px,-${handleSize/2}px);
+    cursor: pointer;
+    box-shadow: 0 0 0 2px rgba(0,0,255,0.6) inset;
+    background-color: white;
   }
 `

@@ -15,7 +15,7 @@ const defaultOptions = {
   ,inline: false
 }
 
-let ghosts,dialog,alterstyle,lastTarget,newTarget,currentQuerySelector,styleSheetBody
+let ghosts,dialog,dialogOptions,alterstyle,lastTarget,newTarget,currentQuerySelector,styleSheetBody,boundMove
 
 const csspool = {init}
 export default csspool
@@ -29,12 +29,12 @@ module && (module.exports = csspool)
  * @param {string} [options.lengthUnits]
  */
 function init(options){
-  options = Object.assign({},defaultOptions,options||{})
-  alterstyle = options.styleSheet||createElement('style',body)
+  dialogOptions = Object.assign({},defaultOptions,options||{})
+  alterstyle = dialogOptions.styleSheet||createElement('style',body)
   const {ownerDocument} = alterstyle
   styleSheetBody = ownerDocument.body
-  const uitarget = options.uitarget||body
-  const {lengthUnits,fontFamilies,inline} = options
+  const uitarget = dialogOptions.uitarget||body
+  const {lengthUnits,fontFamilies,inline} = dialogOptions
   //
   console.log('alterstyle',alterstyle) // todo: remove log
   console.log('body',body) // todo: remove log
@@ -49,11 +49,12 @@ function init(options){
   setCSSValueOptions(cssOptionsMap)
   //
   ghosts = createElement('div')
-  dialog = createElement(`${inline?'div':'dialog'}.${className.main}${options.style?`.${className.main}--${options.style}`:''}${inline?`.${className.main}--inline`:''}`,uitarget)
+  dialog = createElement(`${inline?'div':'dialog'}.${className.main}${dialogOptions.style?`.${className.main}--${dialogOptions.style}`:''}${inline?`.${className.main}--inline`:''}`,uitarget)
   createElement('style',uitarget,style=>style.innerHTML = cssUI)
   createElement('style',styleSheetBody,style=>style.innerHTML = cssGhost)
   //
   styleSheetBody.addEventListener('mousedown',onMouseDownBody,false)
+  styleSheetBody.addEventListener('mouseup',onMouseUpBody,false)
   styleSheetBody.addEventListener('click',onClickBody,false)
   dialog.addEventListener('click',onClickDialog,false)
   dialog.addEventListener('change',onChangeDialog,false)
@@ -69,15 +70,52 @@ function onMouseDownBody(e){
   console.log('onMouseDownBody') // todo: remove log
   const {target} = e
   newTarget = target
+  //
+  const isTargetHandle = target.classList.contains(className.ghostHandle)
+  if (isTargetHandle) {
+    const {x,y,width,height} = target.getBoundingClientRect()
+    const {clientX, clientY} = e
+    const offsetX = clientX-(x+width/2)
+    const offsetY = clientY-(y+height/2)
+    console.log('offset',offsetX,offsetY) // todo: remove log
+    setBoundMove(onMouseMoveBody.bind(null,target,offsetX,offsetY))
+  }
+}
+
+/**
+ * Mouseup handler
+ * @param {Event} e
+ */
+function onMouseMoveBody(handle,xOffset,yOffset,e){
+  const {clientX, clientY} = e
+  const {style} = handle
+  // const computed = getComputedStyle(handle)
+  const computedLeft = clientX-xOffset// + parseFloat(computed.left)
+  const computedTop =  clientY-yOffset// + parseFloat(computed.top)
+  Object.assign(style,{
+    left: `${computedLeft}px`
+    ,top: `${computedTop}px`
+  })
+  console.log('mouseMove',e,computedLeft,computedTop) // todo: remove log
+}
+
+/**
+ * Mouseup handler
+ * @param {Event} e
+ */
+function onMouseUpBody(e){
+  console.log('onMouseUpBody',e) // todo: remove log
+  setBoundMove()
 }
 
 /**
  * Click handler
  */
 function onClickBody(){
-  console.log('onClickBody') // todo: remove log
   const parents = elementAndParents(newTarget)
-  if (!parents.includes(dialog)){
+  const isTargetHandle = newTarget.classList.contains(className.ghostHandle)
+  console.log('onClickBody',isTargetHandle) // todo: remove log
+  if (!parents.includes(dialog)&&!isTargetHandle){
     dialog.close&&dialog.close()
     setDialog(newTarget)
     dialog.showModal&&dialog.showModal()
@@ -92,7 +130,7 @@ function onClickDialog(e){
   //e.preventDefault()
   const {target} = e
   const parents = elementAndParents(target)
-  console.log('onClickDialog', target) // todo: remove log
+  console.log('onClickDialog',target) // todo: remove log
   if (target.classList.contains(className.close)){
     styleSheetBody.removeChild(ghosts)
     dialog.close&&dialog.close()
@@ -206,6 +244,7 @@ function appendRealValueIput(from){
  * @param {HTMLElement} target
  */
 function setDialog(target){
+  console.log('setDialog',target) // todo: remove log
   lastTarget = target
   const {children} = target
   const parents = elementAndParents(target)
@@ -215,7 +254,7 @@ function setDialog(target){
   //
   currentQuerySelector = getBestQuerySelector(target)
   //
-  dialog.innerHTML = `<h3>${NAME}</h3><button class="${className.close}"></button>
+  dialog.innerHTML = `<h3>${NAME}</h3>${dialogOptions.inline?'':`<button class="${className.close}"></button>`}
 
       <ul class="${className.tree}">${
         parents.reverse().map((elm,i,a)=>`<li${i===a.length-1?' class="current"':''}><button data-index="${i}">${elm.nodeName}</button></li>`).join('')+(children.length?`&gt;<select data-children>${defaultOption+Array.from(children).map((child,j)=>`<option value="${j}">${child.nodeName}</option>`)}</select>`:'')
@@ -278,14 +317,21 @@ function applyFormValues(){
 function moveGhosts(){
   if (lastTarget&&ghosts.parentNode){
     while (ghosts.firstChild) ghosts.removeChild(ghosts.firstChild)
-    Array.from(styleSheetBody.querySelectorAll(currentQuerySelector)).forEach(element=>{
-      const rect = element.getBoundingClientRect()
+    currentQuerySelector&&Array.from(styleSheetBody.querySelectorAll(currentQuerySelector)).forEach(element=>{
+      const {x,y,width,height} = element.getBoundingClientRect()
       createElement(`div.${className.ghost}`,ghosts,elm=>Object.assign(elm.style,{
-        top: rect.y+px
-        ,left: rect.x+px
-        ,width: rect.width+px
-        ,height: rect.height+px
+        top: y+px
+        ,left: x+px
+        ,width: width+px
+        ,height: height+px
       }))
+      // only draw handles for lastTarget
+      if (element===lastTarget) {
+        [[x,y],[x+width,y],[x+width,y+height],[x,y+height]].forEach(([x,y])=>createElement(`div.${className.ghostHandle}`,ghosts,elm=>Object.assign(elm.style,{
+          top: y+px
+          ,left: x+px
+        })))
+      }
     })
   }
 }
@@ -367,4 +413,17 @@ function formatCSS(css){
   return css
       .replace(/([{;])\s/g,'$1\n  ')
       .replace(/\s*}/g,'\n}\n  ')
+}
+
+/**
+ * Set the bound move to a variable but first remove the listener
+ * @param {Function} bound
+ */
+function setBoundMove(bound){
+  if (styleSheetBody){
+    boundMove&&styleSheetBody.removeEventListener('mousemove',boundMove,false)
+    bound&&styleSheetBody.addEventListener('mousemove',bound,false)
+    boundMove = bound
+    // console.log('this',this,setBoundMove.foo,setBoundMove.foo=1) // todo: remove log
+  }
 }
