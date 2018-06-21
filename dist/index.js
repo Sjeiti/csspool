@@ -249,15 +249,17 @@ var name = (0, _util.sluggify)(_.NAME);
 var className = exports.className = {
   main: '' + name,
   ghost: name + 'ghost',
+  ghostHandle: name + 'ghostHandle',
   close: name + 'close',
   current: name + 'current',
   tree: name + 'tree',
   selectors: name + 'selectors'
 };
 
-var css = exports.css = '\n  @import url(\'https://fonts.googleapis.com/css?family=Source+Code+Pro\');\n\n  .' + name + ' {\n  \n    --color-font: #333;\n    --color-input-background: #FFF;\n    --color-background1: #FFF;\n    --color-background2: #EEE;\n    --color-border: #CCC;\n    --color-hr: #333;\n    \n    position: absolute;\n    left: auto;\n    right: 0;\n    top: 0;\n    padding: 20px 10px 10px;\n    min-width: 200px;\n    min-height: 200px;\n    border: 0;\n    border-radius: 2px;\n    box-shadow: 1px 4px 16px rgba(0,0,0,0.3), 0 0 0 1px red;\n    background: linear-gradient(var(--color-background1), var(--color-background2));\n    overflow: hidden;\n  }\n  .' + name + '::backdrop {\n    background-color: transparent;\n  }\n  .' + name + ' * {\n    position: initial;\n    left: initial;\n    top: initial;\n    bottom: initial;\n    right: initial;\n    margin: initial;\n    padding: initial;\n    font-size: 12px;\n    line-height: 140%;\n    font-family: Source Code Pro,monospace;\n    color: var(--color-font);\n    border-color: var(--color-border);\n  }\n  .' + name + '--dark input, .' + name + '--dark textarea, .' + name + '--dark select {\n    background-color: var(--color-input-background);\n  }\n  .' + name + '--inline {\n    position: relative;\n    right: auto;\n    top: auto;\n    box-shadow: none;\n    background: none;\n  }\n  .' + name + '--dark {\n    --color-font: #FFC66D;\n    --color-input-background: #2B2B2B;\n    --color-background1: #3C3F41;\n    --color-background2: #313335;\n    --color-border: #333;\n    --color-hr: #FFC66D;\n  }\n  \n  .' + name + ' h3, .' + name + ' .' + className.close + ' {\n    position: absolute;\n    top: 2px;\n    line-height: 100%;\n    font-weight: bold;\n  }\n  .' + name + ' h3 {\n    left: 4px;\n  }\n  .' + name + ' .' + className.close + ' {\n    right: 4px;\n    border: 0;\n    background: transparent;\n  }\n  .' + name + ' .' + className.close + ':after {\n    content: \'\u2716\';\n  }\n  .' + name + ' .' + className.current + ' {\n    box-shadow: 0 0 0 1px #F04;\n  }\n  \n  .' + name + ' hr {\n    margin: 8px 0;\n    border: 0;\n    height: 1px;\n    background-color: var(--color-hr);\n    box-shadow: 100px 0 0 var(--color-hr),  -100px 0 0 var(--color-hr);\n  }\n  \n  .' + name + ' .' + className.tree + ' {\n    display: block;\n    padding: 0;\n  }\n  .' + name + ' .' + className.tree + ' li {\n    display: inline-block;\n  }\n  .' + name + ' .' + className.tree + ' li.current button {\n    font-weight: bold;\n  }\n  .' + name + ' .' + className.tree + ' button, .' + className.tree + ' select, .' + className.tree + ' option {\n    text-transform: lowercase;\n  }\n  .' + name + ' .' + className.tree + ' li:not(:first-child):before {\n    content: \'>\';\n  }\n  .' + name + ' .' + className.tree + ' button {\n    border: 0;\n    background: transparent;\n    padding: 0;\n    box-shadow: none;\n  }\n  \n  .' + name + ' .' + className.selectors + ' .current {\n    font-weight: bold;\n  }\n  \n  .' + name + ' legend {\n    display: block;\n    width: 100%;\n    box-shadow: 0 1px 0 var(--color-border), 0 -1px 0 var(--color-border);\n    cursor: pointer;\n    font-weight: bold;\n  }\n  .' + name + ' .collapse+label+div {\n    display: none;\n  }\n  .' + name + ' .collapse+label {\n    display: block;\n  }\n  .' + name + ' .collapse+label legend:after {\n    content: \'>\';\n    display: inline-block;\n    margin-left: 10px;\n  }\n  .' + name + ' .collapse:checked+label+div {\n    display: block;\n    margin: 8px 0;\n  }\n  .' + name + ' .collapse:checked+label legend:after {\n    transform: rotate(90deg); \n  }\n  \n  .' + name + ' label {\n    display: flex;\n  }\n  .' + name + ' fieldset {\n    border: 0;\n  }\n  .' + name + ' fieldset div label>* {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .' + name + ' fieldset div label>*:nth-child(1) {\n    flex: 30% 0 0;\n    max-width: 30%;\n    order: 1;\n  }\n  .' + name + ' fieldset div label>*:nth-child(2) {\n    flex: 40px 1 0;\n    /*max-width: 40px;*/\n    order: 3;\n  }\n  .' + name + ' fieldset div label>*:nth-child(3) {\n    flex: auto 1 1;\n    order: 2;\n  }\n  \n  .' + name + ' textarea {\n    width: 100%;\n    min-height: 150px;\n  }\n  \n  .' + className.ghost + ' {\n    position: absolute;\n    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);\n  }\n  \n  .visually-hidden {\n    position: absolute !important;\n    clip: rect(1px, 1px, 1px, 1px);\n    padding:0 !important;\n    border:0 !important;\n    height: 1px !important; \n    width: 1px !important; \n    overflow: hidden;\n  }\n';
+var css = exports.css = '\n  @import url(\'https://fonts.googleapis.com/css?family=Source+Code+Pro\');\n\n  .' + name + ' {\n  \n    --color-font: #333;\n    --color-input-background: #FFF;\n    --color-background1: #FFF;\n    --color-background2: #EEE;\n    --color-border: #CCC;\n    --colord-hr: #999;\n    \n    position: absolute;\n    left: auto;\n    right: 0;\n    top: 0;\n    padding: 20px 10px 10px;\n    min-width: 200px;\n    min-height: 200px;\n    border: 0;\n    border-radius: 2px;\n    box-shadow: 1px 4px 16px rgba(0,0,0,0.3), 0 0 0 1px red;\n    background: linear-gradient(var(--color-background1), var(--color-background2));\n    overflow: hidden;\n  }\n  .' + name + '::backdrop {\n    background-color: transparent;\n  }\n  .' + name + ' * {\n    position: initial;\n    left: initial;\n    top: initial;\n    bottom: initial;\n    right: initial;\n    margin: initial;\n    padding: initial;\n    font-size: 12px;\n    line-height: 140%;\n    font-family: Source Code Pro,monospace;\n    color: var(--color-font);\n    border-color: var(--color-border);\n  }\n  .' + name + '--dark input, .' + name + '--dark textarea, .' + name + '--dark select {\n    background-color: var(--color-input-background);\n  }\n  .' + name + '--inline {\n    position: relative;\n    right: auto;\n    top: auto;\n    box-shadow: none;\n    background: none;\n  }\n  .' + name + '--dark {\n    --color-font: #FFC66D;\n    --color-input-background: #2B2B2B;\n    --color-background1: #3C3F41;\n    --color-background2: #313335;\n    --color-border: #333;\n    --color-hr: #FFC66D;\n  }\n  \n  .' + name + ' h3, .' + name + ' .' + className.close + ' {\n    position: absolute;\n    top: 2px;\n    line-height: 100%;\n    font-weight: bold;\n  }\n  .' + name + ' h3 {\n    left: 4px;\n  }\n  .' + name + ' .' + className.close + ' {\n    right: 4px;\n    border: 0;\n    background: transparent;\n  }\n  .' + name + ' .' + className.close + ':after {\n    content: \'\u2716\';\n  }\n  .' + name + ' .' + className.current + ' {\n    box-shadow: 0 0 0 1px #F04;\n  }\n  \n  .' + name + ' hr {\n    margin: 8px 0;\n    border: 0;\n    height: 1px;\n    background-color: var(--color-hr);\n    box-shadow: 100px 0 0 var(--color-hr),  -100px 0 0 var(--color-hr);\n  }\n  \n  .' + name + ' input, .' + name + ' select, .' + name + ' textarea {\n    border: 0;\n    box-shadow: 2px 4px 16px rgba(0,0,0,0.1) inset, 0 0 1px #999 inset;\n  }\n  \n  .' + name + ' .' + className.tree + ' {\n    display: block;\n    padding: 0;\n  }\n  .' + name + ' .' + className.tree + ' li {\n    display: inline-block;\n  }\n  .' + name + ' .' + className.tree + ' li.current button {\n    font-weight: bold;\n  }\n  .' + name + ' .' + className.tree + ' button, .' + className.tree + ' select, .' + className.tree + ' option {\n    text-transform: lowercase;\n  }\n  .' + name + ' .' + className.tree + ' li:not(:first-child):before {\n    content: \'>\';\n  }\n  .' + name + ' .' + className.tree + ' button {\n    border: 0;\n    background: transparent;\n    padding: 0;\n    box-shadow: none;\n  }\n  \n  .' + name + ' .' + className.selectors + ' .current {\n    font-weight: bold;\n  }\n  \n  .' + name + ' legend {\n    display: block;\n    width: 100%;\n    box-shadow: 0 -1px 0 var(--color-border);\n    cursor: pointer;\n    font-weight: bold;\n  }\n  .' + name + ' .collapse+label+div {\n    display: none;\n  }\n  .' + name + ' .collapse+label {\n    display: block;\n  }\n  .' + name + ' .collapse+label legend:after {\n    content: \'>\';\n    display: inline-block;\n    margin-left: 10px;\n  }\n  .' + name + ' .collapse:checked+label+div {\n    display: block;\n    margin: 8px 0;\n  }\n  .' + name + ' .collapse:checked+label legend:after {\n    transform: rotate(90deg); \n  }\n  \n  .' + name + ' label {\n    display: flex;\n  }\n  .' + name + ' fieldset {\n    border: 0;\n  }\n  .' + name + ' fieldset div label>* {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .' + name + ' fieldset div label>*:nth-child(1) {\n    flex: 30% 0 0;\n    max-width: 30%;\n    order: 1;\n  }\n  .' + name + ' fieldset div label>*:nth-child(2) {\n    flex: 40px 1 0;\n    /*max-width: 40px;*/\n    order: 3;\n  }\n  .' + name + ' fieldset div label>*:nth-child(3) {\n    flex: auto 1 1;\n    order: 2;\n  }\n  \n  .' + name + ' textarea {\n    width: 100%;\n    min-height: 150px;\n  }\n  \n  .visually-hidden {\n    position: absolute !important;\n    clip: rect(1px, 1px, 1px, 1px);\n    padding:0 !important;\n    border:0 !important;\n    height: 1px !important; \n    width: 1px !important; \n    overflow: hidden;\n  }\n';
 
-var cssGhost = exports.cssGhost = '\n  .' + className.ghost + ' {\n    position: absolute;\n    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);\n    pointer-events: none;\n  }\n';
+var handleSize = 12;
+var cssGhost = exports.cssGhost = '\n  .' + className.ghost + ' {\n    position: absolute;\n    box-shadow: 0 0 0 1px rgba(0,0,255,0.6), 0 0 8px rgba(0,0,255,0.3);\n    pointer-events: none;\n  }\n  .' + className.ghostHandle + ' {\n    position: absolute;\n    width: ' + handleSize + 'px;\n    height: ' + handleSize + 'px;\n    transform: translate(-' + handleSize / 2 + 'px,-' + handleSize / 2 + 'px);\n    cursor: pointer;\n    box-shadow: 0 0 0 2px rgba(0,0,255,0.6) inset;\n    background-color: white;\n  }\n';
 
 /***/ }),
 /* 3 */
@@ -310,6 +312,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _uiStyle = __webpack_require__(2);
@@ -343,11 +347,13 @@ var defaultOptions = {
 
 var ghosts = void 0,
     dialog = void 0,
+    dialogOptions = void 0,
     alterstyle = void 0,
     lastTarget = void 0,
     newTarget = void 0,
     currentQuerySelector = void 0,
-    styleSheetBody = void 0;
+    styleSheetBody = void 0,
+    setBoundMove = void 0;
 
 var csspool = { init: init };
 exports.default = csspool;
@@ -362,17 +368,17 @@ module && (module.exports = csspool);
  * @param {string} [options.lengthUnits]
  */
 function init(options) {
-  options = Object.assign({}, defaultOptions, options || {});
-  alterstyle = options.styleSheet || (0, _util.createElement)('style', body);
+  dialogOptions = Object.assign({}, defaultOptions, options || {});
+  alterstyle = dialogOptions.styleSheet || (0, _util.createElement)('style', body);
   var _alterstyle = alterstyle,
       ownerDocument = _alterstyle.ownerDocument;
 
   styleSheetBody = ownerDocument.body;
-  var uitarget = options.uitarget || body;
-  var _options = options,
-      lengthUnits = _options.lengthUnits,
-      fontFamilies = _options.fontFamilies,
-      inline = _options.inline;
+  var uitarget = dialogOptions.uitarget || body;
+  var _dialogOptions = dialogOptions,
+      lengthUnits = _dialogOptions.lengthUnits,
+      fontFamilies = _dialogOptions.fontFamilies,
+      inline = _dialogOptions.inline;
   //
 
   console.log('alterstyle', alterstyle); // todo: remove log
@@ -390,7 +396,7 @@ function init(options) {
   setCSSValueOptions(cssOptionsMap);
   //
   ghosts = (0, _util.createElement)('div');
-  dialog = (0, _util.createElement)((inline ? 'div' : 'dialog') + '.' + _uiStyle.className.main + (options.style ? '.' + _uiStyle.className.main + '--' + options.style : '') + (inline ? '.' + _uiStyle.className.main + '--inline' : ''), uitarget);
+  dialog = (0, _util.createElement)((inline ? 'div' : 'dialog') + '.' + _uiStyle.className.main + (dialogOptions.style ? '.' + _uiStyle.className.main + '--' + dialogOptions.style : '') + (inline ? '.' + _uiStyle.className.main + '--inline' : ''), uitarget);
   (0, _util.createElement)('style', uitarget, function (style) {
     return style.innerHTML = _uiStyle.css;
   });
@@ -398,7 +404,10 @@ function init(options) {
     return style.innerHTML = _uiStyle.cssGhost;
   });
   //
+  setBoundMove = eventBinder.bind({}, styleSheetBody, 'mousemove');
+  //
   styleSheetBody.addEventListener('mousedown', onMouseDownBody, false);
+  styleSheetBody.addEventListener('mouseup', onMouseUpBody, false);
   styleSheetBody.addEventListener('click', onClickBody, false);
   dialog.addEventListener('click', onClickDialog, false);
   dialog.addEventListener('change', onChangeDialog, false);
@@ -415,15 +424,64 @@ function onMouseDownBody(e) {
   var target = e.target;
 
   newTarget = target;
+  //
+  var isTargetHandle = target.classList.contains(_uiStyle.className.ghostHandle);
+  if (isTargetHandle) {
+    var _target$getBoundingCl = target.getBoundingClientRect(),
+        x = _target$getBoundingCl.x,
+        y = _target$getBoundingCl.y,
+        width = _target$getBoundingCl.width,
+        height = _target$getBoundingCl.height;
+
+    var clientX = e.clientX,
+        clientY = e.clientY;
+
+    var offsetX = clientX - (x + width / 2);
+    var offsetY = clientY - (y + height / 2);
+    console.log('offset', offsetX, offsetY); // todo: remove log
+    setBoundMove(onMouseMoveBody.bind(null, target, offsetX, offsetY));
+  }
+}
+
+/**
+ * Mouseup handler
+ * @param {HTMLElement} handle
+ * @param {number} xOffset
+ * @param {number} yOffset
+ * @param {Event} e
+ */
+function onMouseMoveBody(handle, xOffset, yOffset, e) {
+  var clientX = e.clientX,
+      clientY = e.clientY;
+  var style = handle.style;
+  // const computed = getComputedStyle(handle)
+
+  var computedLeft = clientX - xOffset; // + parseFloat(computed.left)
+  var computedTop = clientY - yOffset; // + parseFloat(computed.top)
+  Object.assign(style, {
+    left: computedLeft + 'px',
+    top: computedTop + 'px'
+  });
+  console.log('mouseMove', e, computedLeft, computedTop); // todo: remove log
+}
+
+/**
+ * Mouseup handler
+ * @param {Event} e
+ */
+function onMouseUpBody(e) {
+  console.log('onMouseUpBody', e); // todo: remove log
+  setBoundMove();
 }
 
 /**
  * Click handler
  */
 function onClickBody() {
-  console.log('onClickBody'); // todo: remove log
   var parents = (0, _util.elementAndParents)(newTarget);
-  if (!parents.includes(dialog)) {
+  var isTargetHandle = newTarget.classList.contains(_uiStyle.className.ghostHandle);
+  console.log('onClickBody', isTargetHandle); // todo: remove log
+  if (!parents.includes(dialog) && !isTargetHandle) {
     dialog.close && dialog.close();
     setDialog(newTarget);
     dialog.showModal && dialog.showModal();
@@ -559,6 +617,7 @@ function appendRealValueIput(from) {
  * @param {HTMLElement} target
  */
 function setDialog(target) {
+  console.log('setDialog', target); // todo: remove log
   lastTarget = target;
   var children = target.children;
 
@@ -569,7 +628,7 @@ function setDialog(target) {
   //
   currentQuerySelector = getBestQuerySelector(target);
   //
-  dialog.innerHTML = '<h3>' + _config.NAME + '</h3><button class="' + _uiStyle.className.close + '"></button>\n\n      <ul class="' + _uiStyle.className.tree + '">' + (parents.reverse().map(function (elm, i, a) {
+  dialog.innerHTML = '<h3>' + _config.NAME + '</h3>' + (dialogOptions.inline ? '' : '<button class="' + _uiStyle.className.close + '"></button>') + '\n\n      <ul class="' + _uiStyle.className.tree + '">' + (parents.reverse().map(function (elm, i, a) {
     return '<li' + (i === a.length - 1 ? ' class="current"' : '') + '><button data-index="' + i + '">' + elm.nodeName + '</button></li>';
   }).join('') + (children.length ? '&gt;<select data-children>' + (defaultOption + Array.from(children).map(function (child, j) {
     return '<option value="' + j + '">' + child.nodeName + '</option>';
@@ -619,16 +678,36 @@ function moveGhosts() {
   if (lastTarget && ghosts.parentNode) {
     while (ghosts.firstChild) {
       ghosts.removeChild(ghosts.firstChild);
-    }Array.from(styleSheetBody.querySelectorAll(currentQuerySelector)).forEach(function (element) {
-      var rect = element.getBoundingClientRect();
+    }currentQuerySelector && Array.from(styleSheetBody.querySelectorAll(currentQuerySelector)).forEach(function (element) {
+      var _element$getBoundingC = element.getBoundingClientRect(),
+          x = _element$getBoundingC.x,
+          y = _element$getBoundingC.y,
+          width = _element$getBoundingC.width,
+          height = _element$getBoundingC.height;
+
       (0, _util.createElement)('div.' + _uiStyle.className.ghost, ghosts, function (elm) {
         return Object.assign(elm.style, {
-          top: rect.y + px,
-          left: rect.x + px,
-          width: rect.width + px,
-          height: rect.height + px
+          top: y + px,
+          left: x + px,
+          width: width + px,
+          height: height + px
         });
       });
+      // only draw handles for lastTarget
+      if (element === lastTarget) {
+        [[x, y], [x + width, y], [x + width, y + height], [x, y + height]].forEach(function (_ref) {
+          var _ref2 = _slicedToArray(_ref, 2),
+              x = _ref2[0],
+              y = _ref2[1];
+
+          return (0, _util.createElement)('div.' + _uiStyle.className.ghostHandle, ghosts, function (elm) {
+            return Object.assign(elm.style, {
+              top: y + px,
+              left: x + px
+            });
+          });
+        });
+      }
     });
   }
 }
@@ -714,6 +793,19 @@ function showCSS() {
  */
 function formatCSS(css) {
   return css.replace(/([{;])\s/g, '$1\n  ').replace(/\s*}/g, '\n}\n  ');
+}
+
+/**
+ * Set the bound move to a variable but first remove the listener
+ * @param {EventTarget} target
+ * @param {string} event
+ * @param {Function} eventHandler
+ */
+function eventBinder(target, event, eventHandler) {
+  var scope = this || eventBinder;
+  scope.bind && target.removeEventListener(event, scope.bind, false);
+  eventHandler && target.addEventListener(event, eventHandler, false);
+  scope.bind = eventHandler;
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 

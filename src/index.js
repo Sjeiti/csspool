@@ -15,7 +15,7 @@ const defaultOptions = {
   ,inline: false
 }
 
-let ghosts,dialog,dialogOptions,alterstyle,lastTarget,newTarget,currentQuerySelector,styleSheetBody,boundMove
+let ghosts,dialog,dialogOptions,alterstyle,lastTarget,newTarget,currentQuerySelector,styleSheetBody,setBoundMove
 
 const csspool = {init}
 export default csspool
@@ -53,6 +53,8 @@ function init(options){
   createElement('style',uitarget,style=>style.innerHTML = cssUI)
   createElement('style',styleSheetBody,style=>style.innerHTML = cssGhost)
   //
+  setBoundMove = eventBinder.bind({},styleSheetBody,'mousemove')
+  //
   styleSheetBody.addEventListener('mousedown',onMouseDownBody,false)
   styleSheetBody.addEventListener('mouseup',onMouseUpBody,false)
   styleSheetBody.addEventListener('click',onClickBody,false)
@@ -72,9 +74,9 @@ function onMouseDownBody(e){
   newTarget = target
   //
   const isTargetHandle = target.classList.contains(className.ghostHandle)
-  if (isTargetHandle) {
+  if (isTargetHandle){
     const {x,y,width,height} = target.getBoundingClientRect()
-    const {clientX, clientY} = e
+    const {clientX,clientY} = e
     const offsetX = clientX-(x+width/2)
     const offsetY = clientY-(y+height/2)
     console.log('offset',offsetX,offsetY) // todo: remove log
@@ -84,10 +86,13 @@ function onMouseDownBody(e){
 
 /**
  * Mouseup handler
+ * @param {HTMLElement} handle
+ * @param {number} xOffset
+ * @param {number} yOffset
  * @param {Event} e
  */
 function onMouseMoveBody(handle,xOffset,yOffset,e){
-  const {clientX, clientY} = e
+  const {clientX,clientY} = e
   const {style} = handle
   // const computed = getComputedStyle(handle)
   const computedLeft = clientX-xOffset// + parseFloat(computed.left)
@@ -326,7 +331,7 @@ function moveGhosts(){
         ,height: height+px
       }))
       // only draw handles for lastTarget
-      if (element===lastTarget) {
+      if (element===lastTarget){
         [[x,y],[x+width,y],[x+width,y+height],[x,y+height]].forEach(([x,y])=>createElement(`div.${className.ghostHandle}`,ghosts,elm=>Object.assign(elm.style,{
           top: y+px
           ,left: x+px
@@ -417,13 +422,13 @@ function formatCSS(css){
 
 /**
  * Set the bound move to a variable but first remove the listener
- * @param {Function} bound
+ * @param {EventTarget} target
+ * @param {string} event
+ * @param {Function} eventHandler
  */
-function setBoundMove(bound){
-  if (styleSheetBody){
-    boundMove&&styleSheetBody.removeEventListener('mousemove',boundMove,false)
-    bound&&styleSheetBody.addEventListener('mousemove',bound,false)
-    boundMove = bound
-    // console.log('this',this,setBoundMove.foo,setBoundMove.foo=1) // todo: remove log
-  }
+function eventBinder(target,event,eventHandler){
+  const scope = this||eventBinder
+  scope.bind&&target.removeEventListener(event,scope.bind,false)
+  eventHandler&&target.addEventListener(event,eventHandler,false)
+  scope.bind = eventHandler
 }
